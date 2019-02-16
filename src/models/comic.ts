@@ -1,7 +1,7 @@
 import { Chapter } from "./chapter";
 
 export interface Comic {
-    thumbnails: string,
+    thumbnail: string,
     title: string,
     chapters: Chapter[],
     link: string,

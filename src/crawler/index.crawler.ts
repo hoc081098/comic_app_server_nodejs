@@ -19,7 +19,7 @@ export class Crawler {
                     let slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
 
                     comics.push({
-                        thumbnails: $e.find('a > img.lazyOwl').first().attr('data-src'),
+                        thumbnail: $e.find('a > img.lazyOwl').first().attr('data-src'),
                         title: slideCaptionH3Anchor.text(),
                         chapters: [
                             {
@@ -67,7 +67,7 @@ export class Crawler {
                     })();
 
                     comics.push({
-                        thumbnails: figure.find('div > a > img').attr('data-original'),
+                        thumbnail: figure.find('div > a > img').attr('data-original'),
                         title: $e.find('figcaption > h3 > a').text(),
                         chapters: chapters,
                         link: figure.find('div > a').attr('href'),
@@ -98,7 +98,7 @@ export class Crawler {
                     })();
 
                     comics.push({
-                        thumbnails: $e.find('div.t-item > a > img').attr('data-original'),
+                        thumbnail: $e.find('div.t-item > a > img').attr('data-original'),
                         title: $e.find('div.t-item > h3 > a').text(),
                         chapters: [
                             {
