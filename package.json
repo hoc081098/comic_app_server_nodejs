@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "tsc && node ./dist/bin/www"
+    "start": "tsc && node ./dist/bin/www",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@types/express": "^4.16.1",
