@@ -12,8 +12,8 @@ export class Controller {
         } catch (e) {
             debug(e);
             res.status(500).json(<Error>{
-                message: 'Internal error',
-                statusCode: 500
+                message: 'Internal server error',
+                status_code: 500
             });
         }
     };
@@ -26,8 +26,8 @@ export class Controller {
         } catch (e) {
             debug(e);
             res.status(500).json(<Error>{
-                message: 'Internal error',
-                statusCode: 500
+                message: 'Internal server error',
+                status_code: 500
             });
         }
     }
@@ -39,8 +39,8 @@ export class Controller {
         } catch (e) {
             debug(e);
             res.status(500).json(<Error>{
-                message: 'Internal error',
-                statusCode: 500
+                message: 'Internal server error',
+                status_code: 500
             });
         }
     }
