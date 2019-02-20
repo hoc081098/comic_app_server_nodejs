@@ -1,11 +1,12 @@
 const createError = require('http-errors');
-import express from 'express';
+import express, { NextFunction } from 'express';
 import path from 'path';
 const cookieParser = require('cookie-parser');
 import logger from 'morgan';
 
 import indexRouter from './routes/index';
 import { Error } from './models/error';
+import { ErrorRequestHandler, Request, Response } from 'express-serve-static-core';
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(function (req: any, res: any, next: any) {
 });
 
 // error handler
-app.use(function (err: any, req: any, res: any, next: any) {
+let errorHandler: ErrorRequestHandler = function (err: any, req: Request, res: Response, next: NextFunction): any {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -36,6 +37,7 @@ app.use(function (err: any, req: any, res: any, next: any) {
       message: `An error occurred: '${err}'`,
       status_code: statusCode
     });
-});
+}
+app.use(errorHandler)
 
 export default app;

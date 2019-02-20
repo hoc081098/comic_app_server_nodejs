@@ -1,5 +1,11 @@
 #!/usr/bin/env node
-process.env['DEBUG'] = 'comic-app-server:server';
+
+const env: string = process.env.NODE_ENV || 'dev';
+console.log(`NODEJS run... env=${env}`);
+
+if (env === 'dev') {
+  process.env['DEBUG'] = 'comic-app-server:server';
+}
 
 /**
  * Module dependencies.
