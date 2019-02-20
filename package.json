@@ -7,7 +7,10 @@
     "postinstall": "tsc --sourceMap false"
   },
   "dependencies": {
+    "@types/debug": "^4.1.2",
     "@types/express": "^4.16.1",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^11.9.4",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "^1.4.4",
     "debug": "^2.6.9",

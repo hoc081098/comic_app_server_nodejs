@@ -1,4 +1,4 @@
 export interface Error {
-    message: string,
-    status_code: number
+  message: string,
+  status_code: number
 }
