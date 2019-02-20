@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./dist/bin/www",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@types/debug": "^4.1.2",
