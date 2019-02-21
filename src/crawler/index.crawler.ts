@@ -11,9 +11,9 @@ export class Crawler {
       request.get('http://www.nettruyen.com/', (error: any, response: Response, body: any) => {
         if (error) return reject(error);
 
-        let $ = cheerio.load(body);
-        $('div.top-comics').find('div.items-slide div.item').each((i: number, e: any) => {
-          const $e = $(e);
+        let $: CheerioStatic = cheerio.load(body);
+        $('div.top-comics').find('div.items-slide div.item').each((i: number, e: CheerioElement) => {
+          const $e: Cheerio = $(e);
           let slideCaptionAnchor = $e.find('div.slide-caption > a');
           let slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
 
@@ -43,14 +43,14 @@ export class Crawler {
       request.get(`http://www.nettruyen.com/?page=${page}`, (error: any, response: Response, body: any) => {
         if (error) return reject(error);
 
-        let $ = cheerio.load(body);
-        $('div#ctl00_divCenter').find('div.row div.item').each((i: number, e: any) => {
-          const $e = $(e);
+        let $: CheerioStatic = cheerio.load(body);
+        $('div#ctl00_divCenter').find('div.row div.item').each((i: number, e: CheerioElement) => {
+          const $e: Cheerio = $(e);
           const figure = $e.children('figure').first()
 
-          let chapters: Chapter[] = $e.find('figcaption > ul > li').toArray().map((li: any) => {
-            let $li = $(li);
-            let a = $li.children('a').first()
+          let chapters: Chapter[] = $e.find('figcaption > ul > li').toArray().map((li: CheerioElement) => {
+            let $li: Cheerio = $(li);
+            let a: Cheerio = $li.children('a').first()
 
             return <Chapter>{
               chapter_name: a.text(),
@@ -89,9 +89,9 @@ export class Crawler {
       request.get(`http://www.nettruyen.com`, (error: any, response: Response, body: any) => {
         if (error) return reject(error);
 
-        let $ = cheerio.load(body);
-        $('div#topMonth').find('li.clearfix').each((i: number, e: any) => {
-          let $e = $(e);
+        let $: CheerioStatic = cheerio.load(body);
+        $('div#topMonth').find('li.clearfix').each((i: number, e: CheerioElement) => {
+          let $e: Cheerio = $(e);
 
           let view = (function (): string | undefined {
             let html = $e.find('div.t-item > p.chapter > span').html();
