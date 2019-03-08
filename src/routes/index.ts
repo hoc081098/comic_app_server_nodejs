@@ -3,7 +3,7 @@ import { Controller } from '../controllers/index.controller';
 import express, { Router } from 'express';
 const router: Router = express.Router();
 
-router.get('/', (req, res, next) => res.status(200).send('<h3>Hello</h3>'));
+router.get('/', (_req, res, _next) => res.status(200).send('<h1>Hello</h1>'));
 
 router.get('/truyen_de_cu', Controller.truyenDeCu);
 

@@ -9,6 +9,7 @@ const path_1 = __importDefault(require("path"));
 const cookieParser = require('cookie-parser');
 const morgan_1 = __importDefault(require("morgan"));
 const index_1 = __importDefault(require("./routes/index"));
+const detail_1 = __importDefault(require("./routes/detail"));
 const app = express_1.default();
 app.use(morgan_1.default('dev'));
 app.use(express_1.default.json());
@@ -16,6 +17,7 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use('/', index_1.default);
+app.use('/comic_detail', detail_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
