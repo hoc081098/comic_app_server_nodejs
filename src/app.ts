@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/comic_detail', detailRouter);
 app.use('/chapter_detail', chapterRouter);
-app.use('/search', searchRouter);
+app.use('/search_comic', searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {
