@@ -18,7 +18,7 @@ class Controller {
     static truyenDeCu(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let comics = yield index_crawler_1.Crawler.truyenDeCu();
+                const comics = yield index_crawler_1.Crawler.truyenDeCu();
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -35,7 +35,7 @@ class Controller {
         return __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(req.query.page) || 1;
             try {
-                let comics = yield index_crawler_1.Crawler.truyenMoiCapNhat(page);
+                const comics = yield index_crawler_1.Crawler.truyenMoiCapNhat(page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -50,7 +50,7 @@ class Controller {
     static topThang(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let comics = yield index_crawler_1.Crawler.topThang();
+                const comics = yield index_crawler_1.Crawler.topThang();
                 res.status(200).json(comics);
             }
             catch (e) {

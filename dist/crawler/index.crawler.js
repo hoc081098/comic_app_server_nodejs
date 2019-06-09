@@ -8,15 +8,17 @@ const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
     static truyenDeCu() {
         return new Promise((resolve, reject) => {
-            let comics = [];
+            const comics = [];
             request_1.default.get('http://www.nettruyen.com/', (error, response, body) => {
-                if (error)
-                    return reject(error);
-                let $ = cheerio_1.default.load(body);
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                const $ = cheerio_1.default.load(body);
                 $('div.top-comics').find('div.items-slide div.item').each((i, e) => {
                     const $e = $(e);
-                    let slideCaptionAnchor = $e.find('div.slide-caption > a');
-                    let slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
+                    const slideCaptionAnchor = $e.find('div.slide-caption > a');
+                    const slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
                     comics.push({
                         thumbnail: $e.find('a > img.lazyOwl').first().attr('data-src'),
                         title: slideCaptionH3Anchor.text(),
@@ -36,24 +38,26 @@ class Crawler {
     }
     static truyenMoiCapNhat(page) {
         return new Promise((resolve, reject) => {
-            let comics = [];
+            const comics = [];
             request_1.default.get(`http://www.nettruyen.com/?page=${page}`, (error, response, body) => {
-                if (error)
-                    return reject(error);
-                let $ = cheerio_1.default.load(body);
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                const $ = cheerio_1.default.load(body);
                 $('div#ctl00_divCenter').find('div.row div.item').each((i, e) => {
                     const $e = $(e);
                     const figure = $e.children('figure').first();
-                    let chapters = $e.find('figcaption > ul > li').toArray().map((li) => {
-                        let $li = $(li);
-                        let a = $li.children('a').first();
+                    const chapters = $e.find('figcaption > ul > li').toArray().map((li) => {
+                        const $li = $(li);
+                        const a = $li.children('a').first();
                         return {
                             chapter_name: a.text(),
                             chapter_link: a.attr('href'),
                             time: $li.children('i.time').first().text(),
                         };
                     });
-                    let view = (function () {
+                    const view = (function () {
                         let html = figure.find('div > div.view > span').html();
                         if (!html) {
                             return;
@@ -75,14 +79,16 @@ class Crawler {
     }
     static topThang() {
         return new Promise((resolve, reject) => {
-            let comics = [];
+            const comics = [];
             request_1.default.get(`http://www.nettruyen.com`, (error, response, body) => {
-                if (error)
-                    return reject(error);
-                let $ = cheerio_1.default.load(body);
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                const $ = cheerio_1.default.load(body);
                 $('div#topMonth').find('li.clearfix').each((i, e) => {
-                    let $e = $(e);
-                    let view = (function () {
+                    const $e = $(e);
+                    const view = (function () {
                         let html = $e.find('div.t-item > p.chapter > span').html();
                         if (!html) {
                             return;

@@ -8,7 +8,7 @@ const log = debug('comic-app-server:server');
 export class Controller {
   static async truyenDeCu(req: Request, res: Response, next: NextFunction) {
     try {
-      let comics = await Crawler.truyenDeCu();
+      const comics = await Crawler.truyenDeCu();
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -22,7 +22,7 @@ export class Controller {
   static async truyenMoiCapNhat(req: Request, res: Response, next: NextFunction) {
     const page: number = parseInt(req.query.page) || 1;
     try {
-      let comics = await Crawler.truyenMoiCapNhat(page);
+      const comics = await Crawler.truyenMoiCapNhat(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -35,7 +35,7 @@ export class Controller {
 
   static async topThang(req: Request, res: Response, next: NextFunction) {
     try {
-      let comics = await Crawler.topThang();
+      const comics = await Crawler.topThang();
       res.status(200).json(comics);
     } catch (e) {
       log(e);

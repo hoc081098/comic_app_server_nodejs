@@ -12,11 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = __importDefault(require("debug"));
-const detail_crawler_1 = require("../crawler/detail.crawler");
+const chapter_crawler_1 = require("../crawler/chapter.crawler");
 const util_1 = require("../util");
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static getComic(req, res, next) {
+    static getChapterDetail(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { link } = req.query;
@@ -26,7 +26,7 @@ class Controller {
                     return res
                         .status(422)
                         .json({
-                        message: "Require 'comic link' to get comic detail",
+                        message: "Require 'chapter link' to get chapter detail",
                         status_code: 500
                     });
                 }
@@ -34,12 +34,12 @@ class Controller {
                     return res
                         .status(422)
                         .json({
-                        message: "Invalid 'comic link' to get comic detail",
+                        message: "Invalid 'chapter link' to get chapter detail",
                         status_code: 500
                     });
                 }
-                const comic = yield detail_crawler_1.Crawler.chiTietTruyen(link);
-                res.status(200).json(comic);
+                const chapter = yield chapter_crawler_1.Crawler.chiTietChuong(link);
+                res.status(200).json(chapter);
             }
             catch (e) {
                 log(e);
@@ -53,4 +53,4 @@ class Controller {
     }
 }
 exports.Controller = Controller;
-//# sourceMappingURL=detail.controller.js.map
+//# sourceMappingURL=chapter.controller.js.map

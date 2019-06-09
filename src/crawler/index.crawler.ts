@@ -6,16 +6,19 @@ export class Crawler {
 
   static truyenDeCu(): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
-      let comics: Comic[] = [];
+      const comics: Comic[] = [];
 
       request.get('http://www.nettruyen.com/', (error: any, response: Response, body: any) => {
-        if (error) return reject(error);
+        if (error) {
+          reject(error);
+          return;
+        }
 
-        let $: CheerioStatic = cheerio.load(body);
+        const $: CheerioStatic = cheerio.load(body);
         $('div.top-comics').find('div.items-slide div.item').each((i: number, e: CheerioElement) => {
           const $e: Cheerio = $(e);
-          let slideCaptionAnchor = $e.find('div.slide-caption > a');
-          let slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
+          const slideCaptionAnchor = $e.find('div.slide-caption > a');
+          const slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
 
           comics.push({
             thumbnail: $e.find('a > img.lazyOwl').first().attr('data-src'),
@@ -38,34 +41,37 @@ export class Crawler {
 
   static truyenMoiCapNhat(page: number): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
-      let comics: Comic[] = [];
+      const comics: Comic[] = [];
 
       request.get(`http://www.nettruyen.com/?page=${page}`, (error: any, response: Response, body: any) => {
-        if (error) return reject(error);
+        if (error) {
+          reject(error);
+          return;
+        }
 
-        let $: CheerioStatic = cheerio.load(body);
+        const $: CheerioStatic = cheerio.load(body);
         $('div#ctl00_divCenter').find('div.row div.item').each((i: number, e: CheerioElement) => {
           const $e: Cheerio = $(e);
-          const figure = $e.children('figure').first()
+          const figure = $e.children('figure').first();
 
-          let chapters: Chapter[] = $e.find('figcaption > ul > li').toArray().map((li: CheerioElement) => {
-            let $li: Cheerio = $(li);
-            let a: Cheerio = $li.children('a').first()
+          const chapters: Chapter[] = $e.find('figcaption > ul > li').toArray().map((li: CheerioElement) => {
+            const $li: Cheerio = $(li);
+            const a: Cheerio = $li.children('a').first();
 
             return <Chapter>{
               chapter_name: a.text(),
               chapter_link: a.attr('href'),
               time: $li.children('i.time').first().text(),
-            }
+            };
           });
 
-          let view = (function (): string | undefined {
+          const view = (function (): string | undefined {
             let html = figure.find('div > div.view > span').html();
             if (!html) {
               return;
             }
             html = html.replace(/\s{2,}/g, ' ').trim();
-            return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0]
+            return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0];
           })();
 
           comics.push({
@@ -84,22 +90,25 @@ export class Crawler {
 
   static topThang(): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
-      let comics: Comic[] = [];
+      const comics: Comic[] = [];
 
       request.get(`http://www.nettruyen.com`, (error: any, response: Response, body: any) => {
-        if (error) return reject(error);
+        if (error) {
+          reject(error);
+          return;
+        }
 
-        let $: CheerioStatic = cheerio.load(body);
+        const $: CheerioStatic = cheerio.load(body);
         $('div#topMonth').find('li.clearfix').each((i: number, e: CheerioElement) => {
-          let $e: Cheerio = $(e);
+          const $e: Cheerio = $(e);
 
-          let view = (function (): string | undefined {
+          const view = (function (): string | undefined {
             let html = $e.find('div.t-item > p.chapter > span').html();
             if (!html) {
               return;
             }
             html = html.replace(/\s{2,}/g, ' ').trim();
-            return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0]
+            return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0];
           })();
 
           comics.push({

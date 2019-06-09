@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { Error } from "../models/error";
 
 import debug from 'debug';
-import { Crawler } from "../crawler/detail.crawler";
-import { Comic } from "../models/comic";
+import { Crawler } from "../crawler/chapter.crawler";
+import { Chapter } from "../models/chapter";
 import { isValidURL } from "../util";
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async getComic(req: Request, res: Response, next: NextFunction) {
+  static async getChapterDetail(req: Request, res: Response, next: NextFunction) {
     try {
       const { link }: { link: any | undefined | null } = req.query;
       log({ link });
@@ -18,7 +18,7 @@ export class Controller {
         return res
           .status(422)
           .json(<Error>{
-            message: "Require 'comic link' to get comic detail",
+            message: "Require 'chapter link' to get chapter detail",
             status_code: 500
           });
       }
@@ -26,13 +26,13 @@ export class Controller {
         return res
           .status(422)
           .json(<Error>{
-            message: "Invalid 'comic link' to get comic detail",
+            message: "Invalid 'chapter link' to get chapter detail",
             status_code: 500
           });
       }
 
-      const comic: Comic = await Crawler.chiTietTruyen(link);
-      res.status(200).json(comic);
+      const chapter: Chapter = await Crawler.chiTietChuong(link);
+      res.status(200).json(chapter);
     } catch (e) {
       log(e);
       res.status(500)
