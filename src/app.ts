@@ -6,7 +6,8 @@ import logger from 'morgan';
 
 import indexRouter from './routes/index';
 import detailRouter from './routes/detail';
-import chapterRouter from './routes/chapter'
+import chapterRouter from './routes/chapter';
+import searchRouter from './routes/search';
 import { Error } from './models/error';
 // tslint:disable-next-line: no-implicit-dependencies
 import { ErrorRequestHandler, Request, Response } from 'express-serve-static-core';
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/comic_detail', detailRouter);
 app.use('/chapter_detail', chapterRouter);
+app.use('/search', searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {
@@ -41,7 +43,7 @@ const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response
     status_code: statusCode,
   };
   res.status(statusCode).json(error);
-}
-app.use(errorHandler)
+};
+app.use(errorHandler);
 
 export default app;
