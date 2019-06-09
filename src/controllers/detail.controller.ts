@@ -10,7 +10,7 @@ const log = debug('comic-app-server:server');
 export class Controller {
   static async getComic(req: Request, res: Response, next: NextFunction) {
     try {
-      const { link }: { link: any | undefined | null } = req.query;
+      const { link } = req.query;
       log({ link });
 
       // check link is valid?

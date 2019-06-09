@@ -58,7 +58,8 @@
     "trailing-comma": {
       "severity": "warning"
     },
-    "semicolon": true
+    "semicolon": true,
+    "strict-type-predicates": true
   },
   "defaultSeverity": "error"
 }

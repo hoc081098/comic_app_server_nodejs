@@ -9,7 +9,7 @@ const log = debug('comic-app-server:server');
 export class Controller {
   static async search(req: Request, res: Response, next: NextFunction) {
     try {
-      const { query }: { query: any | undefined | null } = req.query;
+      const { query } = req.query;
       log({ query });
 
       // check query is valid?
