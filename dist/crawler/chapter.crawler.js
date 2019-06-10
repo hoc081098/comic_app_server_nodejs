@@ -19,20 +19,22 @@ class Crawler {
                 let lastUpdated = divCenter.find('div.container > div.top > i').text();
                 lastUpdated = lastUpdated.substring(lastUpdated.indexOf(':') + 1, lastUpdated.length - 1).trim();
                 const detail = divCenter.find('.reading-detail.box_doc');
-                let pageChaptersOrHtml = detail.children('.page-chapter')
+                const images = detail.children('.page-chapter')
                     .toArray()
                     .map(page => $(page).children('img').attr('data-original'));
-                if (pageChaptersOrHtml.length === 0) {
-                    pageChaptersOrHtml = detail.find('.content-words').html();
-                    pageChaptersOrHtml = pageChaptersOrHtml === null ? null : escapeHTML(pageChaptersOrHtml);
+                let htmlContent;
+                if (images.length === 0) {
+                    htmlContent = detail.find('.content-words').html();
+                    if (htmlContent)
+                        htmlContent = escapeHTML(htmlContent);
                 }
-                if (!pageChaptersOrHtml) {
-                    pageChaptersOrHtml = undefined;
-                }
+                if (htmlContent === null)
+                    htmlContent = undefined;
                 resolve({
                     chapter_link: link,
                     chapter_name: chapterName,
-                    content: pageChaptersOrHtml,
+                    images: images,
+                    htmlContent: htmlContent,
                     time: lastUpdated,
                 });
             });

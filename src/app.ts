@@ -8,6 +8,7 @@ import indexRouter from './routes/index';
 import detailRouter from './routes/detail';
 import chapterRouter from './routes/chapter';
 import searchRouter from './routes/search';
+import categoriesRouter from './routes/categories';
 import { Error } from './models/error';
 // tslint:disable-next-line: no-implicit-dependencies
 import { ErrorRequestHandler, Request, Response } from 'express-serve-static-core';
@@ -24,6 +25,7 @@ app.use('/', indexRouter);
 app.use('/comic_detail', detailRouter);
 app.use('/chapter_detail', chapterRouter);
 app.use('/search_comic', searchRouter);
+app.use('/categories', categoriesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {

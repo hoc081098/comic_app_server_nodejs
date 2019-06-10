@@ -17,7 +17,7 @@ export class Controller {
         status_code: 500
       });
     }
-  };
+  }
 
   static async truyenMoiCapNhat(req: Request, res: Response, next: NextFunction) {
     const page: number = parseInt(req.query.page) || 1;

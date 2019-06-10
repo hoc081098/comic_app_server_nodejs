@@ -30,7 +30,6 @@ class Controller {
             }
         });
     }
-    ;
     static truyenMoiCapNhat(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(req.query.page) || 1;

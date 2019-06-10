@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "tslint-no-circular-imports"
+  ],
   "rules": {
     "adjacent-overload-signatures": true,
     "ban-comma-operator": true,
