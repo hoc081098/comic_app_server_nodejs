@@ -8,7 +8,7 @@ import { isValidURL } from "../util";
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async getChapterDetail(req: Request, res: Response, next: NextFunction) {
+  static async getChapterDetail(req: Request, res: Response, _next: NextFunction) {
     try {
       const { link } = req.query;
       log({ link });

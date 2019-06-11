@@ -8,7 +8,7 @@ import indexRouter from './routes/index';
 import detailRouter from './routes/detail';
 import chapterRouter from './routes/chapter';
 import searchRouter from './routes/search';
-import categoriesRouter from './routes/categories';
+import categoriesRouter from './routes/category';
 import { Error } from './models/error';
 // tslint:disable-next-line: no-implicit-dependencies
 import { ErrorRequestHandler, Request, Response } from 'express-serve-static-core';

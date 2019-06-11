@@ -9,7 +9,7 @@ class Crawler {
     static timTruyen(query) {
         const link = `http://www.nettruyen.com/Comic/Services/SuggestSearch.ashx?q=${query}`;
         return new Promise((resolve, reject) => {
-            request_1.default.get(link, (error, response, body) => {
+            request_1.default.get(link, (error, _response, body) => {
                 if (error) {
                     reject(error);
                     return;

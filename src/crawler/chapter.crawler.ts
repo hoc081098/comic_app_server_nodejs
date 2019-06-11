@@ -5,7 +5,7 @@ import cheerio from 'cheerio';
 export class Crawler {
   static chiTietChuong(link: string): Promise<Chapter> {
     return new Promise((resolve, reject) => {
-      request.get(link, (error: any, response: Response, body: any): void => {
+      request.get(link, (error: any, _response: Response, body: any): void => {
         if (error) {
           reject(error);
           return;

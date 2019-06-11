@@ -9,13 +9,13 @@ class Crawler {
     static truyenDeCu() {
         return new Promise((resolve, reject) => {
             const comics = [];
-            request_1.default.get('http://www.nettruyen.com/', (error, response, body) => {
+            request_1.default.get('http://www.nettruyen.com/', (error, _response, body) => {
                 if (error) {
                     reject(error);
                     return;
                 }
                 const $ = cheerio_1.default.load(body);
-                $('div.top-comics').find('div.items-slide div.item').each((i, e) => {
+                $('div.top-comics').find('div.items-slide div.item').each((_i, e) => {
                     const $e = $(e);
                     const slideCaptionAnchor = $e.find('div.slide-caption > a');
                     const slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
@@ -39,13 +39,13 @@ class Crawler {
     static truyenMoiCapNhat(page) {
         return new Promise((resolve, reject) => {
             const comics = [];
-            request_1.default.get(`http://www.nettruyen.com/?page=${page}`, (error, response, body) => {
+            request_1.default.get(`http://www.nettruyen.com/?page=${page}`, (error, _response, body) => {
                 if (error) {
                     reject(error);
                     return;
                 }
                 const $ = cheerio_1.default.load(body);
-                $('div#ctl00_divCenter').find('div.row div.item').each((i, e) => {
+                $('div#ctl00_divCenter').find('div.row div.item').each((_i, e) => {
                     const $e = $(e);
                     const figure = $e.children('figure').first();
                     const chapters = $e.find('figcaption > ul > li').toArray().map((li) => {
@@ -80,13 +80,13 @@ class Crawler {
     static topThang() {
         return new Promise((resolve, reject) => {
             const comics = [];
-            request_1.default.get(`http://www.nettruyen.com`, (error, response, body) => {
+            request_1.default.get(`http://www.nettruyen.com`, (error, _response, body) => {
                 if (error) {
                     reject(error);
                     return;
                 }
                 const $ = cheerio_1.default.load(body);
-                $('div#topMonth').find('li.clearfix').each((i, e) => {
+                $('div#topMonth').find('li.clearfix').each((_i, e) => {
                     const $e = $(e);
                     const view = (function () {
                         let html = $e.find('div.t-item > p.chapter > span').html();

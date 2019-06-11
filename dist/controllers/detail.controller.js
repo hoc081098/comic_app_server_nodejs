@@ -16,7 +16,7 @@ const detail_crawler_1 = require("../crawler/detail.crawler");
 const util_1 = require("../util");
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static getComic(req, res, next) {
+    static getComic(req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { link } = req.query;

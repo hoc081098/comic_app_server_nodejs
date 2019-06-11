@@ -15,7 +15,7 @@ const index_crawler_1 = require("../crawler/index.crawler");
 const debug_1 = __importDefault(require("debug"));
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static truyenDeCu(req, res, next) {
+    static truyenDeCu(_req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const comics = yield index_crawler_1.Crawler.truyenDeCu();
@@ -30,7 +30,7 @@ class Controller {
             }
         });
     }
-    static truyenMoiCapNhat(req, res, next) {
+    static truyenMoiCapNhat(req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(req.query.page) || 1;
             try {
@@ -46,7 +46,7 @@ class Controller {
             }
         });
     }
-    static topThang(req, res, next) {
+    static topThang(_req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const comics = yield index_crawler_1.Crawler.topThang();

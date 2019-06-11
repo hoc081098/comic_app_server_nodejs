@@ -6,7 +6,7 @@ import debug from 'debug';
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async truyenDeCu(req: Request, res: Response, next: NextFunction) {
+  static async truyenDeCu(_req: Request, res: Response, _next: NextFunction) {
     try {
       const comics = await Crawler.truyenDeCu();
       res.status(200).json(comics);
@@ -19,7 +19,7 @@ export class Controller {
     }
   }
 
-  static async truyenMoiCapNhat(req: Request, res: Response, next: NextFunction) {
+  static async truyenMoiCapNhat(req: Request, res: Response, _next: NextFunction) {
     const page: number = parseInt(req.query.page) || 1;
     try {
       const comics = await Crawler.truyenMoiCapNhat(page);
@@ -33,7 +33,7 @@ export class Controller {
     }
   }
 
-  static async topThang(req: Request, res: Response, next: NextFunction) {
+  static async topThang(_req: Request, res: Response, _next: NextFunction) {
     try {
       const comics = await Crawler.topThang();
       res.status(200).json(comics);

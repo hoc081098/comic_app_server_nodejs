@@ -8,14 +8,14 @@ export class Crawler {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 
-      request.get('http://www.nettruyen.com/', (error: any, response: Response, body: any) => {
+      request.get('http://www.nettruyen.com/', (error: any, _response: Response, body: any) => {
         if (error) {
           reject(error);
           return;
         }
 
         const $: CheerioStatic = cheerio.load(body);
-        $('div.top-comics').find('div.items-slide div.item').each((i: number, e: CheerioElement) => {
+        $('div.top-comics').find('div.items-slide div.item').each((_i: number, e: CheerioElement) => {
           const $e: Cheerio = $(e);
           const slideCaptionAnchor = $e.find('div.slide-caption > a');
           const slideCaptionH3Anchor = $e.find('div.slide-caption > h3 > a');
@@ -43,14 +43,14 @@ export class Crawler {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 
-      request.get(`http://www.nettruyen.com/?page=${page}`, (error: any, response: Response, body: any) => {
+      request.get(`http://www.nettruyen.com/?page=${page}`, (error: any, _response: Response, body: any) => {
         if (error) {
           reject(error);
           return;
         }
 
         const $: CheerioStatic = cheerio.load(body);
-        $('div#ctl00_divCenter').find('div.row div.item').each((i: number, e: CheerioElement) => {
+        $('div#ctl00_divCenter').find('div.row div.item').each((_i: number, e: CheerioElement) => {
           const $e: Cheerio = $(e);
           const figure = $e.children('figure').first();
 
@@ -92,14 +92,14 @@ export class Crawler {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 
-      request.get(`http://www.nettruyen.com`, (error: any, response: Response, body: any) => {
+      request.get(`http://www.nettruyen.com`, (error: any, _response: Response, body: any) => {
         if (error) {
           reject(error);
           return;
         }
 
         const $: CheerioStatic = cheerio.load(body);
-        $('div#topMonth').find('li.clearfix').each((i: number, e: CheerioElement) => {
+        $('div#topMonth').find('li.clearfix').each((_i: number, e: CheerioElement) => {
           const $e: Cheerio = $(e);
 
           const view = (function (): string | undefined {

@@ -17,15 +17,23 @@ class Crawler {
     theLoai() {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                request_1.default.get('http://www.nettruyen.com/', (error, response, body) => {
+                request_1.default.get('http://www.nettruyen.com/', (error, _response, body) => {
                     if (error) {
                         reject(error);
                         return;
                     }
                     const $ = cheerio_1.default.load(body);
-                    let dropdown = $('ul.dropdown-menu.megamenu');
-                    let titles = dropdown.find('div.col-sm-3 > li > a').toArray().map(e => $(e).attr('title'));
-                    resolve(titles);
+                    const categories = $('nav.main-nav ul.dropdown-menu.megamenu div.col-sm-3 ul.nav li a')
+                        .toArray()
+                        .map((element) => {
+                        const $element = $(element);
+                        return {
+                            link: $element.attr('href'),
+                            name: $element.attr('title') || $element.find('strong').text(),
+                            desciption: $element.attr('data-title'),
+                        };
+                    });
+                    resolve(categories);
                 });
             });
         });

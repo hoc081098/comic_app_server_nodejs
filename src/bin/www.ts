@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const env: string = process.env.NODE_ENV || 'dev';
-console.log(`NODEJS run... env=${env}`);
+const env: string = process.env.NODE_ENV || 'development';
+console.log(`NODEJS running: env = '${env}'`);
 
-if (env === 'dev') {
+if (env === 'development') {
   process.env['DEBUG'] = 'comic-app-server:server';
 }
 
@@ -42,16 +42,16 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val: string) {
-  const port = parseInt(val, 10);
+  const portNum = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (isNaN(portNum)) {
     // named pipe
     return val;
   }
 
-  if (port >= 0) {
+  if (portNum >= 0) {
     // port number
-    return port;
+    return portNum;
   }
 
   return false;

@@ -8,7 +8,7 @@ export class Crawler {
 
   static chiTietTruyen(link: string): Promise<Comic> {
     return new Promise((resolve, reject) => {
-      request.get(link, (error: any, response: Response, body: any) => {
+      request.get(link, (error: any, _response: Response, body: any) => {
         if (error) {
           reject(error);
           return;

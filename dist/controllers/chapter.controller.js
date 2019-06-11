@@ -16,7 +16,7 @@ const chapter_crawler_1 = require("../crawler/chapter.crawler");
 const util_1 = require("../util");
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static getChapterDetail(req, res, next) {
+    static getChapterDetail(req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { link } = req.query;

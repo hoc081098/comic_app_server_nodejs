@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const env = process.env.NODE_ENV || 'dev';
-console.log(`NODEJS run... env=${env}`);
-if (env === 'dev') {
+const env = process.env.NODE_ENV || 'development';
+console.log(`NODEJS running: env = '${env}'`);
+if (env === 'development') {
     process.env['DEBUG'] = 'comic-app-server:server';
 }
 /**
@@ -35,14 +35,14 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
-    const port = parseInt(val, 10);
-    if (isNaN(port)) {
+    const portNum = parseInt(val, 10);
+    if (isNaN(portNum)) {
         // named pipe
         return val;
     }
-    if (port >= 0) {
+    if (portNum >= 0) {
         // port number
-        return port;
+        return portNum;
     }
     return false;
 }

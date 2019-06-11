@@ -7,7 +7,7 @@ import { Comic } from "../models/comic";
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async search(req: Request, res: Response, next: NextFunction) {
+  static async search(req: Request, res: Response, _next: NextFunction) {
     try {
       const { query } = req.query;
       log({ query });

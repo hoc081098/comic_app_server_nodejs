@@ -15,7 +15,7 @@ const search_crawler_1 = require("../crawler/search.crawler");
 const debug_1 = __importDefault(require("debug"));
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static search(req, res, next) {
+    static search(req, res, _next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { query } = req.query;

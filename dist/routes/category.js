@@ -8,4 +8,4 @@ const controller = new category_controller_1.Controller(crawler);
 const router = express_1.Router();
 router.get('/', controller.getAllCategories);
 exports.default = router;
-//# sourceMappingURL=categories.js.map
+//# sourceMappingURL=category.js.map
