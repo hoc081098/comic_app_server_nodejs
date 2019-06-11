@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
-    static chiTietTruyen(link) {
+    chiTietTruyen(link) {
         return new Promise((resolve, reject) => {
             request_1.default.get(link, (error, _response, body) => {
                 if (error) {

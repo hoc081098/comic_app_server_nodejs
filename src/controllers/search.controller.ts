@@ -1,13 +1,17 @@
 import { Crawler } from "../crawler/search.crawler";
-import { NextFunction, Request, Response } from "express";
 import { Error } from "../models/error";
 
 import debug from 'debug';
 import { Comic } from "../models/comic";
+import { RequestHandler } from "express";
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async search(req: Request, res: Response, _next: NextFunction) {
+  constructor(
+    private readonly crawler: Crawler
+  ) { }
+
+  search: RequestHandler = async (req, res, _next) => {
     try {
       const { query } = req.query;
       log({ query });
@@ -30,7 +34,7 @@ export class Controller {
           });
       }
 
-      const comics: Comic[] = await Crawler.timTruyen(query);
+      const comics: Comic[] = await this.crawler.timTruyen(query);
       res.status(200).json(comics);
     } catch (e) {
       log(e);

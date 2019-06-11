@@ -3,7 +3,7 @@ import request, { Response } from 'request';
 import cheerio from 'cheerio';
 
 export class Crawler {
-  async theLoai(): Promise<Category[]> {
+  theLoai(): Promise<Category[]> {
     return new Promise((resolve, reject) => {
       request.get('http://www.nettruyen.com/', (error: any, _response: Response, body: any) => {
         if (error) {

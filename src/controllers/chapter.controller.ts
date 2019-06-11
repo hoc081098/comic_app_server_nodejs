@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import { Error } from "../models/error";
 
 import debug from 'debug';
@@ -8,7 +8,11 @@ import { isValidURL } from "../util";
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async getChapterDetail(req: Request, res: Response, _next: NextFunction) {
+  constructor(
+    private readonly crawler: Crawler
+  ) { }
+
+  getChapterDetail: RequestHandler = async (req, res, _next) => {
     try {
       const { link } = req.query;
       log({ link });
@@ -31,7 +35,7 @@ export class Controller {
           });
       }
 
-      const chapter: Chapter = await Crawler.chiTietChuong(link);
+      const chapter: Chapter = await this.crawler.chiTietChuong(link);
       res.status(200).json(chapter);
     } catch (e) {
       log(e);

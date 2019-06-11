@@ -4,7 +4,7 @@ import request, { Response } from 'request';
 import cheerio from 'cheerio';
 export class Crawler {
 
-  static truyenDeCu(): Promise<Comic[]> {
+  truyenDeCu(): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 
@@ -39,7 +39,7 @@ export class Crawler {
     });
   }
 
-  static truyenMoiCapNhat(page: number): Promise<Comic[]> {
+  truyenMoiCapNhat(page: number): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 
@@ -88,7 +88,7 @@ export class Crawler {
     });
   }
 
-  static topThang(): Promise<Comic[]> {
+  topThang(): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       const comics: Comic[] = [];
 

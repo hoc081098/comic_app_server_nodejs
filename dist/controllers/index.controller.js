@@ -11,14 +11,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_crawler_1 = require("../crawler/index.crawler");
 const debug_1 = __importDefault(require("debug"));
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static truyenDeCu(_req, res, _next) {
-        return __awaiter(this, void 0, void 0, function* () {
+    constructor(crawler) {
+        this.crawler = crawler;
+        this.truyenDeCu = (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const comics = yield index_crawler_1.Crawler.truyenDeCu();
+                const comics = yield this.crawler.truyenDeCu();
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -29,12 +29,10 @@ class Controller {
                 });
             }
         });
-    }
-    static truyenMoiCapNhat(req, res, _next) {
-        return __awaiter(this, void 0, void 0, function* () {
+        this.truyenMoiCapNhat = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             const page = parseInt(req.query.page) || 1;
             try {
-                const comics = yield index_crawler_1.Crawler.truyenMoiCapNhat(page);
+                const comics = yield this.crawler.truyenMoiCapNhat(page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -45,11 +43,9 @@ class Controller {
                 });
             }
         });
-    }
-    static topThang(_req, res, _next) {
-        return __awaiter(this, void 0, void 0, function* () {
+        this.topThang = (_req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const comics = yield index_crawler_1.Crawler.topThang();
+                const comics = yield this.crawler.topThang();
                 res.status(200).json(comics);
             }
             catch (e) {

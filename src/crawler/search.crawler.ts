@@ -4,7 +4,7 @@ import cheerio from 'cheerio';
 
 export class Crawler {
 
-  static timTruyen(query: string): Promise<Comic[]> {
+  timTruyen(query: string): Promise<Comic[]> {
     const link = `http://www.nettruyen.com/Comic/Services/SuggestSearch.ashx?q=${query}`;
 
     return new Promise((resolve, reject) => {

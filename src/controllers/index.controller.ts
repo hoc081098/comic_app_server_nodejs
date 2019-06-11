@@ -1,14 +1,18 @@
 import { Crawler } from "../crawler/index.crawler";
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import { Error } from "../models/error";
 
 import debug from 'debug';
 const log = debug('comic-app-server:server');
 
 export class Controller {
-  static async truyenDeCu(_req: Request, res: Response, _next: NextFunction) {
+  constructor(
+    private readonly crawler: Crawler
+  ) { }
+
+  truyenDeCu: RequestHandler = async (_req, res, _next) => {
     try {
-      const comics = await Crawler.truyenDeCu();
+      const comics = await this.crawler.truyenDeCu();
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -19,10 +23,10 @@ export class Controller {
     }
   }
 
-  static async truyenMoiCapNhat(req: Request, res: Response, _next: NextFunction) {
+  truyenMoiCapNhat: RequestHandler = async (req, res, _next) => {
     const page: number = parseInt(req.query.page) || 1;
     try {
-      const comics = await Crawler.truyenMoiCapNhat(page);
+      const comics = await this.crawler.truyenMoiCapNhat(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -33,9 +37,9 @@ export class Controller {
     }
   }
 
-  static async topThang(_req: Request, res: Response, _next: NextFunction) {
+  topThang: RequestHandler = async (_req, res, _next) => {
     try {
-      const comics = await Crawler.topThang();
+      const comics = await this.crawler.topThang();
       res.status(200).json(comics);
     } catch (e) {
       log(e);

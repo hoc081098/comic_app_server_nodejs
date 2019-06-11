@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
-    static timTruyen(query) {
+    timTruyen(query) {
         const link = `http://www.nettruyen.com/Comic/Services/SuggestSearch.ashx?q=${query}`;
         return new Promise((resolve, reject) => {
             request_1.default.get(link, (error, _response, body) => {

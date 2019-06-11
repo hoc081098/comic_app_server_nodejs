@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
-    static truyenDeCu() {
+    truyenDeCu() {
         return new Promise((resolve, reject) => {
             const comics = [];
             request_1.default.get('http://www.nettruyen.com/', (error, _response, body) => {
@@ -36,7 +36,7 @@ class Crawler {
             });
         });
     }
-    static truyenMoiCapNhat(page) {
+    truyenMoiCapNhat(page) {
         return new Promise((resolve, reject) => {
             const comics = [];
             request_1.default.get(`http://www.nettruyen.com/?page=${page}`, (error, _response, body) => {
@@ -77,7 +77,7 @@ class Crawler {
             });
         });
     }
-    static topThang() {
+    topThang() {
         return new Promise((resolve, reject) => {
             const comics = [];
             request_1.default.get(`http://www.nettruyen.com`, (error, _response, body) => {

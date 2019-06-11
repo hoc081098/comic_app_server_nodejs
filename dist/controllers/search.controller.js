@@ -11,12 +11,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const search_crawler_1 = require("../crawler/search.crawler");
 const debug_1 = __importDefault(require("debug"));
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static search(req, res, _next) {
-        return __awaiter(this, void 0, void 0, function* () {
+    constructor(crawler) {
+        this.crawler = crawler;
+        this.search = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { query } = req.query;
                 log({ query });
@@ -37,7 +37,7 @@ class Controller {
                         status_code: 500
                     });
                 }
-                const comics = yield search_crawler_1.Crawler.timTruyen(query);
+                const comics = yield this.crawler.timTruyen(query);
                 res.status(200).json(comics);
             }
             catch (e) {

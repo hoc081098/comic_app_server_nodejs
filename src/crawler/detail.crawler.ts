@@ -6,7 +6,7 @@ import { Category } from "../models/category";
 
 export class Crawler {
 
-  static chiTietTruyen(link: string): Promise<Comic> {
+  chiTietTruyen(link: string): Promise<Comic> {
     return new Promise((resolve, reject) => {
       request.get(link, (error: any, _response: Response, body: any) => {
         if (error) {

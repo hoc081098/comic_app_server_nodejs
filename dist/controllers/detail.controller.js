@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug_1 = __importDefault(require("debug"));
-const detail_crawler_1 = require("../crawler/detail.crawler");
 const util_1 = require("../util");
 const log = debug_1.default('comic-app-server:server');
 class Controller {
-    static getComic(req, res, _next) {
-        return __awaiter(this, void 0, void 0, function* () {
+    constructor(crawler) {
+        this.crawler = crawler;
+        this.getComic = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { link } = req.query;
                 log({ link });
@@ -38,7 +38,7 @@ class Controller {
                         status_code: 500
                     });
                 }
-                const comic = yield detail_crawler_1.Crawler.chiTietTruyen(link);
+                const comic = yield this.crawler.chiTietTruyen(link);
                 res.status(200).json(comic);
             }
             catch (e) {

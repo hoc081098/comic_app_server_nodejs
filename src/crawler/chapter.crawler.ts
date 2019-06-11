@@ -3,7 +3,7 @@ import request, { Response } from 'request';
 import cheerio from 'cheerio';
 
 export class Crawler {
-  static chiTietChuong(link: string): Promise<Chapter> {
+  chiTietChuong(link: string): Promise<Chapter> {
     return new Promise((resolve, reject) => {
       request.get(link, (error: any, _response: Response, body: any): void => {
         if (error) {
