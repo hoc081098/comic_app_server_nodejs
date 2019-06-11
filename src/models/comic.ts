@@ -2,20 +2,20 @@ import { Chapter } from "./chapter";
 import { Category } from "./category";
 
 export interface Comic {
-  thumbnail: string;
-  title: string;
-  chapters: Chapter[];
-  link: string;
-  view?: string;
+  readonly thumbnail: string;
+  readonly title: string;
+  readonly chapters: Chapter[];
+  readonly link: string;
+  readonly view?: string;
 
   // get full comic detail
-  more_detail?: MoreDetail;
+  readonly more_detail?: MoreDetail;
 }
 export interface MoreDetail {
-  last_updated: string;
-  author: string;
-  status: string;
-  categories: Category[];
-  othername?: string;
-  shortened_content: string;
+  readonly last_updated: string;
+  readonly author: string;
+  readonly status: string;
+  readonly categories: Category[];
+  readonly othername?: string;
+  readonly shortened_content: string;
 }

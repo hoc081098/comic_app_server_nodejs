@@ -1,4 +1,4 @@
 export interface Error {
-  message: string;
-  status_code: number;
+  readonly message: string;
+  readonly status_code: number;
 }

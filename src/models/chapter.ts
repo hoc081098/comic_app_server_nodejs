@@ -1,8 +1,8 @@
 export interface Chapter {
-  chapter_name: string;
-  chapter_link: string;
-  time?: string;
-  images?: string[];
-  htmlContent?: string;
-  view?: string;
+  readonly chapter_name: string;
+  readonly chapter_link: string;
+  readonly time?: string;
+  readonly images?: string[];
+  readonly htmlContent?: string;
+  readonly view?: string;
 }
