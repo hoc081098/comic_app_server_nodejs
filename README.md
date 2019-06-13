@@ -1,6 +1,6 @@
 # comic_app_server_nodejs
-Node.js sever for android comic app | https://comic-app-081098.herokuapp.com/
-
+Node.js sever for android comic app | https://comic-app-081098.herokuapp.com/ <br>
+Crawler http://www.nettruyen.com/
 ## Routes
 * /updated_comics?page=...
 * /sugggest_comics
