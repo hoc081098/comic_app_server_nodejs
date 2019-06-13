@@ -1,12 +1,10 @@
-import { Comic } from "../models/comic";
-import { Chapter } from "../models/chapter";
 import request, { Response } from 'request';
 import cheerio from 'cheerio';
-import { Category } from "../models/category";
+import { ComicDetail } from "./comic_detail.interface";
 
 export class Crawler {
 
-  chiTietTruyen(link: string): Promise<Comic> {
+  comicDetail(link: string): Promise<ComicDetail> {
     return new Promise((resolve, reject) => {
       request.get(link, (error: any, _response: Response, body: any) => {
         if (error) {
@@ -16,7 +14,6 @@ export class Crawler {
 
         const $: CheerioStatic = cheerio.load(body);
 
-        // TODO
         const itemDetail = $('div#ctl00_divCenter #item-detail');
         const detailInfo = $('div.detail-info');
         const title = itemDetail.find('.title-detail').text();
@@ -28,50 +25,52 @@ export class Crawler {
         const statusLi = listInfo.children('li.status');
         const kindLi = listInfo.children('li.kind');
         const viewLi = listInfo.children('li:last-child');
-        const othernameLi = listInfo.children('li.othername');
+        const otherNameLi = listInfo.children('li.othername');
 
         const categories = kindLi.find('p > a')
           .toArray()
-          .map((e: CheerioElement): Category => {
+          .map((e: CheerioElement) => {
             const $e = $(e);
             return {
               link: $e.attr('href'),
               name: $e.text(),
             };
           });
-        let othername: string | undefined = othernameLi.children('h2').text();
-        if (othername.length === 0) othername = undefined;
+        let otherName: string | undefined = otherNameLi.children('h2').text();
+        if (otherName.length === 0) otherName = undefined;
 
         const detailContent = $('div.detail-content');
         const shortened = detailContent.find('p').first();
 
         const listChapters = $('div#nt_listchapter > nav > ul > li');
-        const chapters = listChapters.toArray().map((e: CheerioElement): Chapter => {
-          const $e = $(e);
-          const a = $e.find('a');
-          return {
-            chapter_link: a.attr('href'),
-            chapter_name: a.text(),
-            time: $e.find('div.col-xs-4').text(),
-            view: $e.find('div.col-xs-3').text()
-          };
-        }).slice(1);
+        const chapters = listChapters.toArray()
+          .map((e: CheerioElement) => {
+            const $e = $(e);
+            const a = $e.find('a');
+            return {
+              chapter_link: a.attr('href'),
+              chapter_name: a.text(),
+              time: $e.find('div.col-xs-4').text(),
+              view: $e.find('div.col-xs-3').text()
+            };
+          })
+          .slice(1);
 
-        resolve({
+        const comicDetail: ComicDetail = {
           thumbnail: detailInfo.find('img').attr('src'),
           title: title,
           chapters: chapters,
           link: link,
           view: viewLi.children('p').last().text(),
-          more_detail: {
-            last_updated: updatedAt,
-            author: authorLi.children('p').last().text(),
-            status: statusLi.children('p').last().text(),
-            categories: categories,
-            othername: othername,
-            shortened_content: shortened.text(),
-          }
-        });
+          last_updated: updatedAt,
+          author: authorLi.children('p').last().text(),
+          status: statusLi.children('p').last().text(),
+          categories: categories,
+          other_name: otherName,
+          shortened_content: shortened.text(),
+        };
+
+        resolve(comicDetail);
       });
     });
   }

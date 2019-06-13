@@ -4,7 +4,7 @@ import { Crawler } from './index.crawler';
 
 const crawler = new Crawler();
 const controller = new Controller(crawler);
-const router: Router = express.Router();
+const router = express.Router();
 
 router.get('/', (_req, res) => res.status(200).send("<h1>It's working</h1>"));
 

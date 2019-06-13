@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 import logger from 'morgan';
 
 import indexRouter from './index';
-import detailRouter from './routes/detail';
+import detailRouter from './detail';
 import chapterRouter from './routes/chapter';
 import searchRouter from './routes/search';
 import categoriesRouter from './routes/category';
