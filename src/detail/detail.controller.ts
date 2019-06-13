@@ -10,8 +10,8 @@ export class Controller {
 
   getComicDetail: RequestHandler = async (req, res) => {
     try {
-      const {link} = req.query;
-      log({link});
+      const { link } = req.query;
+      log({ link });
 
       // check link is valid?
       if (!link) {
