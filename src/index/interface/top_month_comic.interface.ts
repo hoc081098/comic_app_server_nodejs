@@ -1,10 +1,12 @@
-export interface TopMonthComic {
+type _TopMonthComic = {
   last_chapter: {
-    chapter_name: string;
-    chapter_link: string
+    readonly chapter_name: string;
+    readonly chapter_link: string
   };
   thumbnail: string;
   view?: string;
   link: string;
   title: string;
-}
+};
+
+export type TopMonthComic = Readonly<_TopMonthComic>;

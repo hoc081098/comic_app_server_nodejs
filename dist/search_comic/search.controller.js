@@ -7,19 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const debug_1 = __importDefault(require("debug"));
-const log = debug_1.default('comic-app-server:server');
+const util_1 = require("../util");
 class Controller {
     constructor(crawler) {
         this.crawler = crawler;
         this.searchComic = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { query } = req.query;
-                log({ query });
+                util_1.log({ query });
                 // check query is valid?
                 if (query === undefined || query === null) {
                     return res
@@ -41,7 +37,7 @@ class Controller {
                 res.status(200).json(comics);
             }
             catch (e) {
-                log(e);
+                util_1.log(e);
                 res.status(500).json({
                     message: 'Internal server error',
                     status_code: 500
@@ -51,4 +47,4 @@ class Controller {
     }
 }
 exports.Controller = Controller;
-//# sourceMappingURL=searchComic.controller.js.map
+//# sourceMappingURL=search.controller.js.map

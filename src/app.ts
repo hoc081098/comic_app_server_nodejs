@@ -7,28 +7,38 @@ import path from 'path';
 const cookieParser = require('cookie-parser');
 import logger from 'morgan';
 
+/**
+ * Import routes
+ */
 import indexRouter from './index';
 import detailRouter from './detail';
-import chapterRouter from './routes/chapter';
-import searchRouter from './routes/search';
-import categoriesRouter from './routes/category';
+import chapterDetailRouter from './chapter_detail';
+import searchComicRouter from './search_comic';
+import categoryRouter from './category';
+
 import { Error } from './models/error';
 // tslint:disable-next-line: no-implicit-dependencies
 import { ErrorRequestHandler, Request, Response } from 'express-serve-static-core';
 
 const app = express();
 
+/**
+ * Basic setup
+ */
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * Use routes
+ */
 app.use('/', indexRouter);
 app.use('/comic_detail', detailRouter);
-app.use('/chapter_detail', chapterRouter);
-app.use('/search_comic', searchRouter);
-app.use('/categories', categoriesRouter);
+app.use('/chapter_detail', chapterDetailRouter);
+app.use('/search_comic', searchComicRouter);
+app.use('/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {

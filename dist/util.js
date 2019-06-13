@@ -21,4 +21,12 @@ function isValidURL(str) {
     return pattern.test(str);
 }
 exports.isValidURL = isValidURL;
+function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '');
+}
+exports.escapeHTML = escapeHTML;
 //# sourceMappingURL=util.js.map

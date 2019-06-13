@@ -1,9 +1,10 @@
-import { Chapter } from "../models/chapter";
 import request, { Response } from 'request';
 import cheerio from 'cheerio';
+import { ChapterDetail } from "./chapter_detail.interface";
+import { escapeHTML } from "../util";
 
 export class Crawler {
-  chiTietChuong(link: string): Promise<Chapter> {
+  chapterDetail(link: string): Promise<ChapterDetail> {
     return new Promise((resolve, reject) => {
       request.get(link, (error: any, _response: Response, body: any): void => {
         if (error) {
@@ -30,22 +31,15 @@ export class Crawler {
         }
         if (htmlContent === null) htmlContent = undefined;
 
-        resolve({
+        const chapterDetail: ChapterDetail = {
           chapter_link: link,
           chapter_name: chapterName,
           images: images,
           htmlContent: htmlContent,
           time: lastUpdated,
-        });
+        };
+        resolve(chapterDetail);
       });
     });
   }
-}
-
-function escapeHTML(s: string) {
-  return s.replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '');
 }

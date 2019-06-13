@@ -1,18 +1,16 @@
-import { Request, NextFunction, Response, RequestHandler } from "express";
-import debug from "debug";
+import { RequestHandler } from "express";
 import { Error } from '../models/error';
-import { Crawler } from "../crawler/category.crawler";
-
-const log = debug('comic-app-server:server');
+import { Crawler } from "./category.crawler";
+import { log } from "../util";
 
 export class Controller {
   constructor(
     private readonly crawler: Crawler
   ) { }
 
-  getAllCategories: RequestHandler = async (_req, res, _next) => {
+  getAllCategories: RequestHandler = async (_req, res) => {
     try {
-      const categories = await this.crawler.theLoai();
+      const categories = await this.crawler.allCategories();
       res.status(200).json(categories);
     } catch (e) {
       log(e);
@@ -22,5 +20,5 @@ export class Controller {
       };
       res.status(500).json(error);
     }
-  }
+  };
 }

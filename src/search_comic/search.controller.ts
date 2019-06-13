@@ -1,17 +1,14 @@
-import { Crawler } from "../crawler/search.crawler";
+import { Crawler } from "./search.crawler";
 import { Error } from "../models/error";
-
-import debug from 'debug';
-import { Comic } from "../models/comic";
 import { RequestHandler } from "express";
-const log = debug('comic-app-server:server');
+import { log } from "../util";
 
 export class Controller {
   constructor(
     private readonly crawler: Crawler
   ) { }
 
-  search: RequestHandler = async (req, res, _next) => {
+  searchComic: RequestHandler = async (req, res, _next) => {
     try {
       const { query } = req.query;
       log({ query });
@@ -21,7 +18,7 @@ export class Controller {
         return res
           .status(422)
           .json(<Error>{
-            message: "Require 'query' to search comic detail",
+            message: "Require 'query' to searchComic comic detail",
             status_code: 500
           });
       }
@@ -29,12 +26,12 @@ export class Controller {
         return res
           .status(422)
           .json(<Error>{
-            message: "Invalid 'query' to search comic detail",
+            message: "Invalid 'query' to searchComic comic detail",
             status_code: 500
           });
       }
 
-      const comics: Comic[] = await this.crawler.timTruyen(query);
+      const comics = await this.crawler.searchComic(query);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -43,5 +40,5 @@ export class Controller {
         status_code: 500
       });
     }
-  }
+  };
 }

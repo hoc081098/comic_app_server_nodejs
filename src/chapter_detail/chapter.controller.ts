@@ -1,18 +1,14 @@
 import { RequestHandler } from "express";
 import { Error } from "../models/error";
-
-import debug from 'debug';
-import { Crawler } from "../crawler/chapter.crawler";
-import { Chapter } from "../models/chapter";
-import { isValidURL } from "../util";
-const log = debug('comic-app-server:server');
+import { Crawler } from "./chapter.crawler";
+import { isValidURL, log } from "../util";
 
 export class Controller {
   constructor(
     private readonly crawler: Crawler
   ) { }
 
-  getChapterDetail: RequestHandler = async (req, res, _next) => {
+  getChapterDetail: RequestHandler = async (req, res) => {
     try {
       const { link } = req.query;
       log({ link });
@@ -35,7 +31,7 @@ export class Controller {
           });
       }
 
-      const chapter: Chapter = await this.crawler.chiTietChuong(link);
+      const chapter = await this.crawler.chapterDetail(link);
       res.status(200).json(chapter);
     } catch (e) {
       log(e);
@@ -45,5 +41,5 @@ export class Controller {
           status_code: 500
         });
     }
-  }
+  };
 }

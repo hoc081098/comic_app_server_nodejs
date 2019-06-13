@@ -19,4 +19,12 @@ function isValidURL(str: string): boolean {
   return pattern.test(str);
 }
 
-export { isValidURL, log };
+function escapeHTML(s: string) {
+  return s.replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '');
+}
+
+export { isValidURL, log, escapeHTML };

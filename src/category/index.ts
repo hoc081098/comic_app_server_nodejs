@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Controller } from '../controllers/category.controller';
-import { Crawler } from '../crawler/category.crawler';
+import { Controller } from './category.controller';
+import { Crawler } from './category.crawler';
 
 const crawler = new Crawler();
 const controller = new Controller(crawler);

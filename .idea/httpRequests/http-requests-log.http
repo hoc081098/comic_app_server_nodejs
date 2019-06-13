@@ -1,3 +1,115 @@
+GET http://localhost:3000/search_comic?query=hi
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105214.200.json
+
+###
+
+GET http://localhost:3000/search_comic?query=hi
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105132.200.json
+
+###
+
+GET http://localhost:3000/top_month_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105119.200.json
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105113.200.json
+
+###
+
+GET http://localhost:3000/updated_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105101.200.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/nu-duong-gia-suong-da-trai/chap-20/477767
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105040.200.json
+
+###
+
+GET http://localhost:3000/category
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T105013.200.json
+
+###
+
+GET http://localhost:3000/comic_detail?link=http://www.nettruyen.com/truyen-tranh/nu-duong-gia-suong-da-trai
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T104956.200.json
+
+###
+
+GET http://localhost:3000/comic_detail?link=http://www.nettruyen.com/truyen-tranh/nu-duong-gia-suong-da-trai
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T104936.200.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh-truyen-chu/chap-233.5/477603
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T102718.200.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh/chap-75/477663
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T102649.200.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh/chap-75/477663
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T102612.200.json
+
+###
+
+GET http://localhost:3000/sa
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T102605.404.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh/chap-75/477663
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T102555.200.json
+
+###
+
 GET http://localhost:3000/comic_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh
 Accept: */*
 Cache-Control: no-cache

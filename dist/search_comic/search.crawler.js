@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 class Crawler {
-    timTruyen(query) {
+    searchComic(query) {
         const link = `http://www.nettruyen.com/Comic/Services/SuggestSearch.ashx?q=${query}`;
         return new Promise((resolve, reject) => {
             request_1.default.get(link, (error, _response, body) => {
@@ -15,18 +15,20 @@ class Crawler {
                     return;
                 }
                 const $ = cheerio_1.default.load(body);
-                const comics = $('li').toArray().map((li) => {
+                const comics = $('li')
+                    .toArray()
+                    .map((li) => {
                     const $li = $(li);
                     return {
                         title: $li.find('h3').text(),
                         thumbnail: $li.find('img').attr('src'),
                         link: $li.find('a').attr('href'),
-                        chapters: [
-                            {
-                                chapter_name: $li.find('h4 > i').first().text(),
-                                chapter_link: '',
-                            },
-                        ],
+                        last_chapter_name: $li.find('h4 > i').first().text(),
+                        category_names: $li.find('h4 > i')
+                            .last()
+                            .text()
+                            .split(/, +/g)
+                            .map((name) => name.trim())
                     };
                 });
                 resolve(comics);
@@ -35,4 +37,4 @@ class Crawler {
     }
 }
 exports.Crawler = Crawler;
-//# sourceMappingURL=searchComic.crawler.js.map
+//# sourceMappingURL=search.crawler.js.map

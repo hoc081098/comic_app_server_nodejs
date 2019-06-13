@@ -108,7 +108,7 @@ class Crawler {
                             chapter_link: $e.find('div.t-item > p.chapter > a').attr('href'),
                         },
                         link: $e.find('div.t-item > a').attr('href'),
-                        view: view,
+                        view: view
                     };
                 });
                 resolve(comics);

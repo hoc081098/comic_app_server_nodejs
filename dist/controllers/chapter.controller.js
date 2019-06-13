@@ -38,7 +38,7 @@ class Controller {
                         status_code: 500
                     });
                 }
-                const chapter = yield this.crawler.chiTietChuong(link);
+                const chapter = yield this.crawler.chapterDetail(link);
                 res.status(200).json(chapter);
             }
             catch (e) {
