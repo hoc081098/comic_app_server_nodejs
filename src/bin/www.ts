@@ -1,19 +1,7 @@
 #!/usr/bin/env node
 
-const env: string = process.env.NODE_ENV || 'development';
-console.log(`NODEJS running: env = '${env}'`);
-
-if (env === 'development') {
-  process.env['DEBUG'] = 'comic-app-server:server';
-}
-
-/**
- * Module dependencies.
- */
-
+import { log } from "../util";
 import app from '../app';
-import debug from 'debug';
-const log = debug('comic-app-server:server');
 import http from 'http';
 
 /**

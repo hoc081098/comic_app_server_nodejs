@@ -1,0 +1,112 @@
+GET http://localhost:3000/sa
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T093000.404.json
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092946.200.json
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092845.200.json
+
+###
+
+GET http://localhost:3000/s
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092740.404.json
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092734.200.json
+
+###
+
+GET http://localhost:3000
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092722.200.html
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092629.200.json
+
+###
+
+GET http://localhost:3000/updated_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092619.200.json
+
+###
+
+GET http://localhost:3000/top_month_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092610.200.json
+
+###
+
+GET http://localhost:3000/updated_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T092545.200.json
+
+###
+
+GET http://localhost:3000/updated_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T091656.200.json
+
+###
+
+GET http://localhost:3000/suggest_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T091612.200.json
+
+###
+
+GET http://localhost:3000/top_month_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T091420.200.json
+
+###
+
+GET http://localhost:3000/top_month_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-06-13T091410.200.json
+
+###
+

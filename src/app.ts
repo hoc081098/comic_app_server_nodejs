@@ -1,10 +1,13 @@
+import { log } from "./util";
+
 const createError = require('http-errors');
 import express, { NextFunction } from 'express';
 import path from 'path';
+
 const cookieParser = require('cookie-parser');
 import logger from 'morgan';
 
-import indexRouter from './routes/index';
+import indexRouter from './index';
 import detailRouter from './routes/detail';
 import chapterRouter from './routes/chapter';
 import searchRouter from './routes/search';
@@ -44,6 +47,7 @@ const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response
     message: `An error occurred: '${err}'`,
     status_code: statusCode,
   };
+  log({ err });
   res.status(statusCode).json(error);
 };
 app.use(errorHandler);

@@ -1,52 +1,53 @@
-import { Crawler } from "../crawler/index.crawler";
+import { Crawler } from "./index.crawler";
 import { RequestHandler } from "express";
 import { Error } from "../models/error";
-
-import debug from 'debug';
-const log = debug('comic-app-server:server');
+import { log } from "../util";
 
 export class Controller {
   constructor(
     private readonly crawler: Crawler
   ) { }
 
-  truyenDeCu: RequestHandler = async (_req, res, _next) => {
+  suggestComics: RequestHandler = async (_req, res) => {
     try {
-      const comics = await this.crawler.truyenDeCu();
+      const comics = await this.crawler.suggestComics();
       res.status(200).json(comics);
     } catch (e) {
       log(e);
-      res.status(500).json(<Error>{
+      const error: Error = {
         message: 'Internal server error',
         status_code: 500
-      });
+      };
+      res.status(500).json(error);
     }
   }
 
-  truyenMoiCapNhat: RequestHandler = async (req, res, _next) => {
+  updatedComics: RequestHandler = async (req, res) => {
     const page: number = parseInt(req.query.page) || 1;
     try {
-      const comics = await this.crawler.truyenMoiCapNhat(page);
+      const comics = await this.crawler.updatedComics(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
-      res.status(500).json(<Error>{
+      const error: Error = {
         message: 'Internal server error',
         status_code: 500
-      });
+      };
+      res.status(500).json(error);
     }
   }
 
-  topThang: RequestHandler = async (_req, res, _next) => {
+  topMonthComics: RequestHandler = async (_req, res) => {
     try {
-      const comics = await this.crawler.topThang();
+      const comics = await this.crawler.topMonthComics();
       res.status(200).json(comics);
     } catch (e) {
       log(e);
-      res.status(500).json(<Error>{
+      const error: Error = {
         message: 'Internal server error',
-        status_code: 500
-      });
+        status_code: 500,
+      };
+      res.status(500).json(error);
     }
   }
 }

@@ -3,12 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("./util");
 const createError = require('http-errors');
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cookieParser = require('cookie-parser');
 const morgan_1 = __importDefault(require("morgan"));
-const index_1 = __importDefault(require("./routes/index"));
+const index_1 = __importDefault(require("./index"));
 const detail_1 = __importDefault(require("./routes/detail"));
 const chapter_1 = __importDefault(require("./routes/chapter"));
 const search_1 = __importDefault(require("./routes/search"));
@@ -39,6 +40,7 @@ const errorHandler = (err, req, res, next) => {
         message: `An error occurred: '${err}'`,
         status_code: statusCode,
     };
+    util_1.log({ err });
     res.status(statusCode).json(error);
 };
 app.use(errorHandler);

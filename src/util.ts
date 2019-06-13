@@ -1,3 +1,14 @@
+const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+console.log(`NODEJS running: env = '${env}'`);
+
+if (env === 'development') {
+  process.env['DEBUG'] = 'comic-app-server:server';
+}
+
+import debug from 'debug';
+
+const log = debug('comic-app-server:server');
+
 function isValidURL(str: string): boolean {
   const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -7,4 +18,5 @@ function isValidURL(str: string): boolean {
     '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
   return pattern.test(str);
 }
-export { isValidURL };
+
+export { isValidURL, log };
