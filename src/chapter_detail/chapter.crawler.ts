@@ -35,7 +35,7 @@ export class Crawler {
           chapter_link: link,
           chapter_name: chapterName,
           images: images,
-          htmlContent: htmlContent,
+          html_content: htmlContent,
           time: lastUpdated,
         };
         resolve(chapterDetail);
