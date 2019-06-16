@@ -8,11 +8,13 @@
     "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
+    "@types/lowdb": "^1.0.9",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "^1.4.4",
     "debug": "^2.6.9",
     "express": "^4.16.4",
     "http-errors": "^1.6.3",
+    "lowdb": "^1.0.0",
     "morgan": "^1.9.1",
     "request": "^2.88.0"
   },
