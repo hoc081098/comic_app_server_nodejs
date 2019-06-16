@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
-const lowdb_1 = __importDefault(require("lowdb"));
-const FileSync_1 = __importDefault(require("lowdb/adapters/FileSync"));
 const util_1 = require("../util");
-const adapter = new FileSync_1.default('../../db.json');
-const db = lowdb_1.default(adapter);
-// Set some defaults (required if your JSON file is empty)
-db.defaults({ images: {}, last_fetch: undefined }).write();
+const firebase_admin_1 = __importDefault(require("firebase-admin"));
+const serviceAccountKey_json_1 = __importDefault(require("../serviceAccountKey.json"));
+firebase_admin_1.default.initializeApp({
+    credential: firebase_admin_1.default.credential.cert(serviceAccountKey_json_1.default),
+    databaseURL: "https://doanlthtvdk.firebaseio.com"
+});
+const ref = firebase_admin_1.default.database().ref('comic_app');
 class Crawler {
     allCategories() {
         return new Promise((resolve, reject) => {
@@ -39,11 +40,13 @@ class Crawler {
                         description: $element.attr('data-title'),
                     };
                 });
-                let images = db.get('images').value();
-                const lastFetch = db.get('last_fetch').value();
+                const readPromises = ['images', 'last_fetch'].map(path => ref.child(path).once('value').then(snapshot => snapshot.val()));
+                let images;
+                let lastFetch;
+                [images, lastFetch] = yield Promise.all(readPromises);
                 console.log({ images, lastFetch });
                 const links = categories.map(c => c.link);
-                const haveNotImages = !images || links.some(link => !images[link]);
+                const haveNotImages = !images || links.some(link => !images[util_1.encode(link)]);
                 util_1.log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
                 if (haveNotImages || !lastFetch || Date.now() - lastFetch >= Crawler.TIMEOUT) {
                     try {
@@ -53,15 +56,21 @@ class Crawler {
                             const data = yield this.getFirstImage(link);
                             images = Object.assign({}, images, data);
                         }
-                        db.set('images', images).write();
-                        db.set('last_fetch', Date.now()).write();
+                        const encodedImages = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.encode(k)]: images[k] })), {});
+                        yield Promise.all([
+                            ref.child('images').set(encodedImages),
+                            ref.child('last_fetch').set(Date.now()),
+                        ]);
                         util_1.log('Fetch done');
                     }
                     catch (e) {
-                        util_1.log(`Fetch ${{ e }}`);
+                        util_1.log(`Fetch error=${{ e }}`);
                         reject(e);
                         return;
                     }
+                }
+                else {
+                    images = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.decode(k)]: images[k] })), {});
                 }
                 resolve(categories.map((c) => (Object.assign({}, c, { thumbnail: images[c.link] }))));
             }));

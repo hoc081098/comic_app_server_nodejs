@@ -27,4 +27,23 @@ function escapeHTML(s: string) {
     .replace(/\n/g, '');
 }
 
-export { isValidURL, log, escapeHTML };
+/**
+ * 
+ */
+
+const escapeRegExp = (str: string) => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+const chars = '.$[]#/%'.split('');
+const charCodes = chars.map((c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+const charToCode: { [key: string]: string } = {};
+const codeToChar: { [key: string]: string } = {};
+chars.forEach((c, i) => {
+  charToCode[c] = charCodes[i];
+  codeToChar[charCodes[i]] = c;
+});
+const charsRegex = new RegExp(`[${escapeRegExp(chars.join(''))}]`, 'g');
+const charCodesRegex = new RegExp(charCodes.join('|'), 'g');
+
+const encode = (str: string) => str.replace(charsRegex, (match) => charToCode[match]);
+const decode = (str: string) => str.replace(charCodesRegex, (match) => codeToChar[match]);
+
+export { isValidURL, log, escapeHTML, encode, decode };

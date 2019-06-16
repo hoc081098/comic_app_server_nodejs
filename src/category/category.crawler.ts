@@ -1,16 +1,17 @@
 import request, { Response } from 'request';
 import cheerio from 'cheerio';
-
-import low from 'lowdb';
-import FileSync from 'lowdb/adapters/FileSync';
 import { Category } from "./category.interface";
-import { log } from "../util";
+import { log, encode, decode } from "../util";
 
-const adapter = new FileSync('../../db.json');
-const db = low(adapter);
+import admin, { ServiceAccount } from "firebase-admin";
+import serviceAccount from "../serviceAccountKey.json";
 
-// Set some defaults (required if your JSON file is empty)
-db.defaults({ images: {}, last_fetch: undefined }).write();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as ServiceAccount),
+  databaseURL: "https://doanlthtvdk.firebaseio.com"
+});
+
+const ref = admin.database().ref('comic_app');
 
 export class Crawler {
   private static TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
@@ -35,30 +36,39 @@ export class Crawler {
             };
           });
 
-        let images: { [key: string]: string } = db.get('images').value();
-        const lastFetch: number | undefined = db.get('last_fetch').value();
+        const readPromises = ['images', 'last_fetch'].map(path => ref.child(path).once('value').then(snapshot => snapshot.val()));
+        let images: { [key: string]: string };
+        let lastFetch: number | undefined;
+        [images, lastFetch] = await Promise.all(readPromises);
         console.log({ images, lastFetch });
 
         const links = categories.map(c => c.link);
-        const haveNotImages = !images || links.some(link => !images[link]);
+        const haveNotImages = !images || links.some(link => !images[encode(link)]);
         log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
 
         if (haveNotImages || !lastFetch || Date.now() - lastFetch >= Crawler.TIMEOUT) {
           try {
             log('Start fetch');
+
             for (const link of links) {
               log(`Fetch ${link}`);
               const data = await this.getFirstImage(link);
               images = { ...images, ...data };
             }
-            db.set('images', images).write();
-            db.set('last_fetch', Date.now()).write();
+
+            const encodedImages = Object.keys(images).reduce((acc, k) => ({ ...acc, [encode(k)]: images[k] }), {});
+            await Promise.all([
+              ref.child('images').set(encodedImages),
+              ref.child('last_fetch').set(Date.now()),
+            ]);
             log('Fetch done');
           } catch (e) {
-            log(`Fetch ${{ e }}`);
+            log(`Fetch error=${{ e }}`);
             reject(e);
             return;
           }
+        } else {
+          images = Object.keys(images).reduce((acc, k) => ({ ...acc, [decode(k)]: images[k] }), {});
         }
 
         resolve(categories.map((c): Category => ({ ...c, thumbnail: images[c.link] })));
