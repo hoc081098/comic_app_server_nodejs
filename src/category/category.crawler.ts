@@ -3,11 +3,10 @@ import cheerio from 'cheerio';
 import { Category } from "./category.interface";
 import { log, encode, decode, isValidURL } from "../util";
 import admin from "firebase-admin";
-import { link } from 'fs';
 
 export class Crawler {
   private static TIMEOUT = 60 * 60 * 1000; // 1 hour
-  private readonly ref: admin.database.Reference
+  private readonly ref: admin.database.Reference;
 
   constructor() {
     this.ref = admin.database().ref('comic_app');
