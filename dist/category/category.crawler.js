@@ -15,13 +15,10 @@ const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
-const serviceAccountKey_json_1 = __importDefault(require("../serviceAccountKey.json"));
-firebase_admin_1.default.initializeApp({
-    credential: firebase_admin_1.default.credential.cert(serviceAccountKey_json_1.default),
-    databaseURL: "https://doanlthtvdk.firebaseio.com"
-});
-const ref = firebase_admin_1.default.database().ref('comic_app');
 class Crawler {
+    constructor() {
+        this.ref = firebase_admin_1.default.database().ref('comic_app');
+    }
     allCategories() {
         return new Promise((resolve, reject) => {
             request_1.default.get('http://www.nettruyen.com/', (error, _response, body) => __awaiter(this, void 0, void 0, function* () {
@@ -40,42 +37,46 @@ class Crawler {
                         description: $element.attr('data-title'),
                     };
                 });
-                const readPromises = ['images', 'last_fetch'].map(path => ref.child(path).once('value').then(snapshot => snapshot.val()));
-                let images;
-                let lastFetch;
-                [images, lastFetch] = yield Promise.all(readPromises);
-                console.log({ images, lastFetch });
-                const links = categories.map(c => c.link);
-                const haveNotImages = !images || links.some(link => !images[util_1.encode(link)]);
-                util_1.log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
-                if (haveNotImages || !lastFetch || Date.now() - lastFetch >= Crawler.TIMEOUT) {
-                    try {
-                        util_1.log('Start fetch');
-                        for (const link of links) {
-                            util_1.log(`Fetch ${link}`);
-                            const data = yield this.getFirstImage(link);
-                            images = Object.assign({}, images, data);
-                        }
-                        const encodedImages = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.encode(k)]: images[k] })), {});
-                        yield Promise.all([
-                            ref.child('images').set(encodedImages),
-                            ref.child('last_fetch').set(Date.now()),
-                        ]);
-                        util_1.log('Fetch done');
-                    }
-                    catch (e) {
-                        util_1.log(`Fetch error=${{ e }}`);
-                        reject(e);
-                        return;
-                    }
-                }
-                else {
-                    images = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.decode(k)]: images[k] })), {});
-                }
+                const images = yield this.fetchImagesIfNeeded(categories.map(c => c.link));
                 resolve(categories.map((c) => (Object.assign({}, c, { thumbnail: images[c.link] }))));
             }));
         });
     }
+    fetchImagesIfNeeded(links) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // get data from firebase
+            let images;
+            let lastFetch;
+            [images, lastFetch] = yield Promise.all(['images', 'last_fetch']
+                .map(path => this.ref
+                .child(path)
+                .once('value')
+                .then(snapshot => snapshot.val())));
+            images = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.decode(k)]: images[k] })), {});
+            util_1.log({ images, lastFetch });
+            const haveNotImages = !images || links.some(link => !images[link] || !util_1.isValidURL(images[link]));
+            util_1.log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
+            if (haveNotImages || !lastFetch) {
+                // first time or invalid data, need await
+                return yield this.getAndSaveImages(links);
+            }
+            else if (Date.now() - lastFetch >= Crawler.TIMEOUT) {
+                // timeout
+                // this is not the first time, not need await, data will be saved to firebase database for later
+                // and current data is valid, just return
+                this.getAndSaveImages(links);
+                return images;
+            }
+            else {
+                // have valid data, just return
+                return images;
+            }
+        });
+    }
+    /**
+     *
+     * @param categoryLink category url
+     */
     getFirstImage(categoryLink) {
         return new Promise((resolve, reject) => {
             request_1.default.get(categoryLink, (error, _response, body) => {
@@ -90,7 +91,30 @@ class Crawler {
             });
         });
     }
+    /**
+    *
+    * @param links category urls
+    */
+    getAndSaveImages(links) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // get
+            let images = {};
+            for (const link of links) {
+                util_1.log(`[START] fetch ${link}`);
+                const data = yield this.getFirstImage(link);
+                images = Object.assign({}, images, data);
+            }
+            // save
+            const encodedImages = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.encode(k)]: images[k] })), {});
+            yield Promise.all([
+                this.ref.child('images').set(encodedImages),
+                this.ref.child('last_fetch').set(Date.now()),
+            ]);
+            util_1.log('[DONE] fetch');
+            return images;
+        });
+    }
 }
-Crawler.TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
+Crawler.TIMEOUT = 60 * 60 * 1000; // 1 hour
 exports.Crawler = Crawler;
 //# sourceMappingURL=category.crawler.js.map
