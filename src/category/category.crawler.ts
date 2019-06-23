@@ -62,6 +62,7 @@ export class Crawler {
       // timeout
       // this is not the first time, not need await, data will be saved to firebase database for later
       // and current data is valid, just return
+      // tslint:disable-next-line: no-floating-promises
       this.getAndSaveImages(links);
       return images;
     } else {

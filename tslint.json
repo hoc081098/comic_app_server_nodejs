@@ -23,7 +23,7 @@
       true,
       "allow-empty-catch"
     ],
-    "no-floating-promises": false,
+    "no-floating-promises": true,
     "no-implicit-dependencies": true,
     "no-invalid-this": true,
     "no-string-throw": true,
