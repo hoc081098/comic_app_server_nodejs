@@ -32,7 +32,11 @@ export class Crawler {
       chapterId: number;
       name: string;
       url: string;
-    }[] = JSON.parse(body).chapters;
+    }[] = JSON.parse(body)
+      .chapters
+      .map((c: any) => {
+        return { ...c, url: `http://www.nettruyen.com${c.url}` };
+      });
 
     const indexOfCurrentChapter = allChapters.findIndex(c => c.chapterId === chapterId);
     const prevChapterLink: string | undefined = (() => {

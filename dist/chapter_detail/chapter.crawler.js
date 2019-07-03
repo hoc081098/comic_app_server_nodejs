@@ -38,7 +38,11 @@ class Crawler {
                 return +array[array.length - 1];
             })();
             const body = yield util_1.GET(`http://www.nettruyen.com/Comic/Services/ComicService.asmx/ProcessChapterLoader?chapterId=${chapterId}&commentId=0`);
-            const allChapters = JSON.parse(body).chapters;
+            const allChapters = JSON.parse(body)
+                .chapters
+                .map((c) => {
+                return Object.assign({}, c, { url: `http://www.nettruyen.com${c.url}` });
+            });
             const indexOfCurrentChapter = allChapters.findIndex(c => c.chapterId === chapterId);
             const prevChapterLink = (() => {
                 const prevChapter = allChapters[indexOfCurrentChapter + 1];
