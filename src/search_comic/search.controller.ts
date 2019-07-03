@@ -40,5 +40,5 @@ export class Controller {
         status_code: 500
       });
     }
-  };
+  }
 }
