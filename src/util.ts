@@ -6,6 +6,7 @@ if (env === 'development') {
 }
 
 import debug from 'debug';
+import request, { Response } from 'request';
 
 const log = debug('comic-app-server:server');
 
@@ -46,4 +47,21 @@ const charCodesRegex = new RegExp(charCodes.join('|'), 'g');
 const encode = (str: string) => str.replace(charsRegex, (match) => charToCode[match]);
 const decode = (str: string) => str.replace(charCodesRegex, (match) => codeToChar[match]);
 
-export { isValidURL, log, escapeHTML, encode, decode };
+/**
+ * GET body from url
+ * @param url string
+ * @returns a Promise resolve body response
+ */
+function GET(url: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    request.get(url, (error: any, _response: Response, body: any): void => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(body);
+    });
+  });
+}
+
+export { isValidURL, log, escapeHTML, encode, decode, GET };

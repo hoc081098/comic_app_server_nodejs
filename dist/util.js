@@ -9,6 +9,7 @@ if (env === 'development') {
     process.env['DEBUG'] = 'comic-app-server:server';
 }
 const debug_1 = __importDefault(require("debug"));
+const request_1 = __importDefault(require("request"));
 const log = debug_1.default('comic-app-server:server');
 exports.log = log;
 function isValidURL(str) {
@@ -47,4 +48,21 @@ const encode = (str) => str.replace(charsRegex, (match) => charToCode[match]);
 exports.encode = encode;
 const decode = (str) => str.replace(charCodesRegex, (match) => codeToChar[match]);
 exports.decode = decode;
+/**
+ * GET body from url
+ * @param url string
+ * @returns a Promise resolve body response
+ */
+function GET(url) {
+    return new Promise((resolve, reject) => {
+        request_1.default.get(url, (error, _response, body) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve(body);
+        });
+    });
+}
+exports.GET = GET;
 //# sourceMappingURL=util.js.map
