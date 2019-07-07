@@ -51,7 +51,14 @@ export class Crawler {
     const chapterDetail: ChapterDetail = {
       chapter_link: link,
       chapter_name: chapterName,
-      images: images,
+      images: images.map(image => {
+        if (image.startsWith('//proxy.truyen.cloud')) {
+          const url = image.substring(image.indexOf('?') + 1).split('&')[0];
+          return url.substring(url.indexOf('=') + 1);
+        } else {
+          return image;
+        }
+      }),
       html_content: htmlContent,
       time: lastUpdated,
       prev_chapter_link: prevChapterLink,
