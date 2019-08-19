@@ -8,13 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const index_crawler_1 = require("./index.crawler");
 const util_1 = require("../util");
 class Controller {
-    constructor(crawler) {
-        this.crawler = crawler;
-        this.suggestComics = (_req, res) => __awaiter(this, void 0, void 0, function* () {
+    constructor() {
+        this.newestComics = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const comics = yield this.crawler.suggestComics();
+                const page = parseInt(req.query.page) || 1;
+                const comics = yield index_crawler_1.Crawler.newestComics(page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -27,9 +28,9 @@ class Controller {
             }
         });
         this.updatedComics = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const page = parseInt(req.query.page) || 1;
             try {
-                const comics = yield this.crawler.updatedComics(page);
+                const page = parseInt(req.query.page) || 1;
+                const comics = yield index_crawler_1.Crawler.updatedComics(page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -41,9 +42,10 @@ class Controller {
                 res.status(500).json(error);
             }
         });
-        this.topMonthComics = (_req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.mostViewedComics = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const comics = yield this.crawler.topMonthComics();
+                const page = parseInt(req.query.page) || 1;
+                const comics = yield index_crawler_1.Crawler.mostViewedComics(page);
                 res.status(200).json(comics);
             }
             catch (e) {

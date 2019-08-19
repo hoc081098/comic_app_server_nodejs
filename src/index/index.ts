@@ -1,17 +1,15 @@
 import { Controller } from './index.controller';
-import express, { Router } from 'express';
-import { Crawler } from './index.crawler';
+import express from 'express';
 
-const crawler = new Crawler();
-const controller = new Controller(crawler);
+const controller = new Controller();
 const router = express.Router();
 
 router.get('/', (_req, res) => res.status(200).send("<h1>It's working</h1>"));
 
-router.get('/suggest_comics', controller.suggestComics);
+router.get('/newest_comics', controller.newestComics);
 
 router.get('/updated_comics', controller.updatedComics);
 
-router.get('/top_month_comics', controller.topMonthComics);
+router.get('/most_viewed_comics', controller.mostViewedComics);
 
 export default router;

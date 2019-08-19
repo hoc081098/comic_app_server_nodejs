@@ -1,4 +1,4 @@
-type _UpdatedComic = {
+type _Comic = {
   thumbnail: string;
   view?: string;
   link: string;
@@ -10,4 +10,4 @@ type _UpdatedComic = {
   title: string;
 };
 
-export type UpdatedComic = Readonly<_UpdatedComic>;
+export type Comic = Readonly<_Comic>;

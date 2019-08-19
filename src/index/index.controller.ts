@@ -4,13 +4,10 @@ import { Error } from "../models/error";
 import { log } from "../util";
 
 export class Controller {
-  constructor(
-    private readonly crawler: Crawler
-  ) { }
-
-  suggestComics: RequestHandler = async (_req, res) => {
+  newestComics: RequestHandler = async (req, res) => {
     try {
-      const comics = await this.crawler.suggestComics();
+      const page = parseInt(req.query.page) || 1;
+      const comics = await Crawler.newestComics(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -23,9 +20,9 @@ export class Controller {
   }
 
   updatedComics: RequestHandler = async (req, res) => {
-    const page: number = parseInt(req.query.page) || 1;
     try {
-      const comics = await this.crawler.updatedComics(page);
+      const page = parseInt(req.query.page) || 1;
+      const comics = await Crawler.updatedComics(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
@@ -37,9 +34,10 @@ export class Controller {
     }
   }
 
-  topMonthComics: RequestHandler = async (_req, res) => {
+  mostViewedComics: RequestHandler = async (req, res) => {
     try {
-      const comics = await this.crawler.topMonthComics();
+      const page = parseInt(req.query.page) || 1;
+      const comics = await Crawler.mostViewedComics(page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);

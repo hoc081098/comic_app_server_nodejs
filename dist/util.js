@@ -10,8 +10,12 @@ if (env === 'development') {
 }
 const debug_1 = __importDefault(require("debug"));
 const request_1 = __importDefault(require("request"));
+const cheerio_1 = __importDefault(require("cheerio"));
 const log = debug_1.default('comic-app-server:server');
 exports.log = log;
+/**
+ *
+ */
 function isValidURL(str) {
     const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -65,4 +69,43 @@ function GET(url) {
     });
 }
 exports.GET = GET;
+/**
+ * Parse body to list of comics
+ * @param body string
+ * @return a list of comics
+ */
+function bodyToComicList(body) {
+    const $ = cheerio_1.default.load(body);
+    return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+        .toArray()
+        .map((liComic) => {
+        const $liComic = $(liComic);
+        const title = $liComic.find('div.content_grid_item_name > a').text();
+        const contentGridItemImg = $liComic.find('div.content_grid_item_img');
+        const view = contentGridItemImg.find('div.view').text().trim();
+        const link = contentGridItemImg.find('a').attr('href');
+        const thumbnail = contentGridItemImg.find('a > img').first().attr('src');
+        const last_chapters = $liComic.find('div.content_grid_item_chapter > ul > li')
+            .toArray()
+            .map(liChapter => {
+            const $liChapter = $(liChapter);
+            const chapter_name = $liChapter.find('a').text();
+            const chapter_link = $liChapter.find('a').attr('href');
+            const time = $liChapter.find('i').text();
+            return {
+                chapter_name,
+                chapter_link,
+                time,
+            };
+        });
+        return {
+            title,
+            view,
+            link,
+            thumbnail,
+            last_chapters,
+        };
+    });
+}
+exports.bodyToComicList = bodyToComicList;
 //# sourceMappingURL=util.js.map

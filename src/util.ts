@@ -1,3 +1,5 @@
+import { Comic } from "./models/comic.interface";
+
 const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 console.log(`NODEJS running: env = '${env}'`);
 
@@ -7,8 +9,13 @@ if (env === 'development') {
 
 import debug from 'debug';
 import request, { Response } from 'request';
+import cheerio from "cheerio";
 
 const log = debug('comic-app-server:server');
+
+/**
+ *
+ */
 
 function isValidURL(str: string): boolean {
   const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -29,7 +36,7 @@ function escapeHTML(s: string) {
 }
 
 /**
- * 
+ *
  */
 
 const escapeRegExp = (str: string) => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
@@ -64,4 +71,49 @@ function GET(url: string): Promise<any> {
   });
 }
 
-export { isValidURL, log, escapeHTML, encode, decode, GET };
+/**
+ * Parse body to list of comics
+ * @param body string
+ * @return a list of comics
+ */
+function bodyToComicList(body: string): Comic[] {
+  const $ = cheerio.load(body);
+
+  return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+    .toArray()
+    .map((liComic): Comic => {
+      const $liComic = $(liComic);
+      const title = $liComic.find('div.content_grid_item_name > a').text();
+
+      const contentGridItemImg = $liComic.find('div.content_grid_item_img');
+      const view = contentGridItemImg.find('div.view').text().trim();
+      const link = contentGridItemImg.find('a').attr('href');
+      const thumbnail = contentGridItemImg.find('a > img').first().attr('src');
+
+      const last_chapters = $liComic.find('div.content_grid_item_chapter > ul > li')
+        .toArray()
+        .map(liChapter => {
+          const $liChapter = $(liChapter);
+
+          const chapter_name = $liChapter.find('a').text();
+          const chapter_link = $liChapter.find('a').attr('href');
+          const time = $liChapter.find('i').text();
+
+          return {
+            chapter_name,
+            chapter_link,
+            time,
+          };
+        });
+
+      return {
+        title,
+        view,
+        link,
+        thumbnail,
+        last_chapters,
+      };
+    });
+}
+
+export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList };
