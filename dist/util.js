@@ -76,7 +76,7 @@ exports.GET = GET;
  */
 function bodyToComicList(body) {
     const $ = cheerio_1.default.load(body);
-    return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+    return $('div.content_left div.content_grid > ul > li.content_grid_item')
         .toArray()
         .map((liComic) => {
         const $liComic = $(liComic);

@@ -1,77 +1,81 @@
-import request, { Response } from 'request';
 import cheerio from 'cheerio';
 import { ComicDetail } from "./comic_detail.interface";
+import { bodyToComicList, GET } from "../util";
 
 export class Crawler {
 
-  comicDetail(link: string): Promise<ComicDetail> {
-    return new Promise((resolve, reject) => {
-      request.get(link, (error: any, _response: Response, body: any) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+  async comicDetail(link: string): Promise<ComicDetail> {
+    const body = await GET(link);
+    const $ = cheerio.load(body);
 
-        const $: CheerioStatic = cheerio.load(body);
+    const content_left = $('div.content_left');
+    const manga_info = content_left.find('div.manga_info');
 
-        const itemDetail = $('div#ctl00_divCenter #item-detail');
-        const detailInfo = $('div.detail-info');
-        const title = itemDetail.find('.title-detail').text();
-        let updatedAt = itemDetail.find('time.small').text();
-        updatedAt = updatedAt.substring(updatedAt.indexOf(':') + 1, updatedAt.lastIndexOf(']')).trim();
+    const thumbnail = manga_info.find('div.manga_info_left > div.manga_info_img > img').attr('src');
 
-        const listInfo = itemDetail.find('ul.list-info');
-        const authorLi = listInfo.children('li.author');
-        const statusLi = listInfo.children('li.status');
-        const kindLi = listInfo.children('li.kind');
-        const viewLi = listInfo.children('li:last-child');
-        const otherNameLi = listInfo.children('li.othername');
+    const manga_info_right = manga_info.find('div.manga_info_right');
+    const title = manga_info_right.find('div.manga_name > h1').text().trim();
 
-        const categories = kindLi.find('p > a')
-          .toArray()
-          .map((e: CheerioElement) => {
-            const $e = $(e);
+    let view = '0';
+    let authors: { link: string; name: string }[] = [];
+    let categories: { readonly link: string; readonly  name: string }[] = [];
+    manga_info_right.find('div.manga_des > ul > li').toArray().forEach(li => {
+      const $li = $(li);
+      const spanText = $li.find('span').text().trim();
+      switch (spanText) {
+        case 'Views:':
+          const text = $li.text();
+          view = text.substring('Views:'.length + 1).trim();
+          break;
+        case 'Authors:':
+          authors = $li.find('a').toArray().map(a => {
+            const $a = $(a);
             return {
-              link: $e.attr('href'),
-              name: $e.text(),
+              name: $a.attr('title'),
+              link: $a.attr('href'),
             };
           });
-        let otherName: string | undefined = otherNameLi.children('h2').text();
-        if (otherName.length === 0) otherName = undefined;
-
-        const detailContent = $('div.detail-content');
-        const shortened = detailContent.find('p').first();
-
-        const listChapters = $('div#nt_listchapter > nav > ul > li');
-        const chapters = listChapters.toArray()
-          .map((e: CheerioElement) => {
-            const $e = $(e);
-            const a = $e.find('a');
+          break;
+        case 'Categories:':
+          categories = $li.find('a').toArray().map(a => {
+            const $a = $(a);
             return {
-              chapter_link: a.attr('href'),
-              chapter_name: a.text(),
-              time: $e.find('div.col-xs-4').text(),
-              view: $e.find('div.col-xs-3').text()
+              name: $a.attr('title'),
+              link: $a.attr('href'),
             };
-          })
-          .slice(1);
-
-        const comicDetail: ComicDetail = {
-          thumbnail: detailInfo.find('img').attr('src'),
-          title: title,
-          chapters: chapters,
-          link: link,
-          view: viewLi.children('p').last().text(),
-          last_updated: updatedAt,
-          author: authorLi.children('p').last().text(),
-          status: statusLi.children('p').last().text(),
-          categories: categories,
-          other_name: otherName,
-          shortened_content: shortened.text(),
-        };
-
-        resolve(comicDetail);
-      });
+          });
+          break;
+      }
     });
+
+    const shortened_content = content_left.find('div.manga_description > div.manga_des_content > p').text().trim();
+
+    const chapters = content_left.find('div.manga_chapter > div.manga_chapter_list > ul > li')
+      .toArray()
+      .map(li => {
+        const $li = $(li);
+
+        return {
+          view: $li.find('div.chapter_time').text().trim(),
+          chapter_name: $li.find('div.chapter_number > a').text().trim(),
+          time: $li.find('div.chapter_view').text().trim(),
+          chapter_link: $li.find('div.chapter_number > a').attr('href'),
+        };
+      });
+
+    const related_comics = bodyToComicList(body);
+
+    return {
+      title,
+      thumbnail,
+      view,
+      authors,
+      categories,
+      shortened_content,
+      chapters,
+      link,
+      last_updated: chapters[0].time,
+      related_comics,
+    };
   }
 }

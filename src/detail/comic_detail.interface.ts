@@ -1,3 +1,5 @@
+import { Comic } from "../models/comic.interface";
+
 type _ComicDetail = {
   thumbnail: string;
   view: string;
@@ -9,15 +11,17 @@ type _ComicDetail = {
     time: string;
     chapter_link: string
   }>[];
-  author: string;
+  authors: {
+    readonly name: string;
+    readonly link: string
+  }[];
   link: string;
-  other_name: string | undefined;
   categories: {
     readonly link: string;
-    readonly  name: string
+    readonly name: string
   }[];
   title: string;
-  status: string;
+  related_comics: Comic[],
 };
 
 export type ComicDetail = Readonly<_ComicDetail>;

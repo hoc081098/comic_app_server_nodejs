@@ -79,7 +79,7 @@ function GET(url: string): Promise<any> {
 function bodyToComicList(body: string): Comic[] {
   const $ = cheerio.load(body);
 
-  return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+  return $('div.content_left div.content_grid > ul > li.content_grid_item')
     .toArray()
     .map((liComic): Comic => {
       const $liComic = $(liComic);
