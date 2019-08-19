@@ -1,10 +1,19 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
+const util_1 = require("../util");
 class Crawler {
     suggestComics() {
         return new Promise((resolve, reject) => {
@@ -36,46 +45,38 @@ class Crawler {
         });
     }
     updatedComics(page) {
-        return new Promise((resolve, reject) => {
-            request_1.default.get(`http://www.nettruyen.com/?page=${page}`, (error, _response, body) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                const $ = cheerio_1.default.load(body);
-                const comics = $('div#ctl00_divCenter').find('div.row div.item')
+        return __awaiter(this, void 0, void 0, function* () {
+            const body = yield util_1.GET(`https://ww2.mangafox.online/page/${page}`);
+            const $ = cheerio_1.default.load(body);
+            return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+                .toArray()
+                .map((liComic) => {
+                const $liComic = $(liComic);
+                const title = $liComic.find('div.content_grid_item_name > a').text();
+                const contentGridItemImg = $liComic.find('div.content_grid_item_img');
+                const view = contentGridItemImg.find('div.view').text().trim();
+                const link = contentGridItemImg.find('a').attr('href');
+                const thumbnail = contentGridItemImg.find('a > img').first().attr('src');
+                const last_chapters = $liComic.find('div.content_grid_item_chapter > ul > li')
                     .toArray()
-                    .map((e) => {
-                    const $e = $(e);
-                    const figure = $e.children('figure').first();
-                    const chapters = $e.find('figcaption > ul > li')
-                        .toArray()
-                        .map((li) => {
-                        const $li = $(li);
-                        const a = $li.children('a').first();
-                        return {
-                            chapter_name: a.text(),
-                            chapter_link: a.attr('href'),
-                            time: $li.children('i.time').first().text(),
-                        };
-                    });
-                    const view = (() => {
-                        let html = figure.find('div > div.view > span').html();
-                        if (!html) {
-                            return;
-                        }
-                        html = html.replace(/\s{2,}/g, ' ').trim();
-                        return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0];
-                    })();
+                    .map(liChapter => {
+                    const $liChapter = $(liChapter);
+                    const chapter_name = $liChapter.find('a').text();
+                    const chapter_link = $liChapter.find('a').attr('href');
+                    const time = $liChapter.find('i').text();
                     return {
-                        thumbnail: figure.find('div > a > img').attr('data-original'),
-                        title: $e.find('figcaption > h3 > a').text(),
-                        last_chapters: chapters,
-                        link: figure.find('div > a').attr('href'),
-                        view: view,
+                        chapter_name,
+                        chapter_link,
+                        time,
                     };
                 });
-                resolve(comics);
+                return {
+                    title,
+                    view,
+                    link,
+                    thumbnail,
+                    last_chapters,
+                };
             });
         });
     }

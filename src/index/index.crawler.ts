@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import { SuggestComic } from "./interface/suggest_comic.interface";
 import { UpdatedComic } from "./interface/updated_comic.interface";
 import { TopMonthComic } from "./interface/top_month_comic.interface";
+import { GET } from "../util";
 
 export class Crawler {
 
@@ -39,55 +40,46 @@ export class Crawler {
     });
   }
 
-  updatedComics(page: number): Promise<UpdatedComic[]> {
-    return new Promise((resolve, reject) => {
-      request.get(`http://www.nettruyen.com/?page=${page}`, (error: any, _response: Response, body: any) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+  async updatedComics(page: number): Promise<UpdatedComic[]> {
+    const body = await GET(`https://ww2.mangafox.online/page/${page}`);
 
-        const $: CheerioStatic = cheerio.load(body);
-        const comics = $('div#ctl00_divCenter').find('div.row div.item')
+    const $ = cheerio.load(body);
+
+    return $('div.content_left > div.content_grid > ul > li.content_grid_item')
+      .toArray()
+      .map((liComic): UpdatedComic => {
+        const $liComic = $(liComic);
+        const title = $liComic.find('div.content_grid_item_name > a').text();
+
+        const contentGridItemImg = $liComic.find('div.content_grid_item_img');
+        const view = contentGridItemImg.find('div.view').text().trim();
+        const link = contentGridItemImg.find('a').attr('href');
+        const thumbnail = contentGridItemImg.find('a > img').first().attr('src');
+
+        const last_chapters = $liComic.find('div.content_grid_item_chapter > ul > li')
           .toArray()
-          .map((e: CheerioElement): UpdatedComic => {
-            const $e: Cheerio = $(e);
-            const figure = $e.children('figure').first();
+          .map(liChapter => {
+            const $liChapter = $(liChapter);
 
-            const chapters = $e.find('figcaption > ul > li')
-              .toArray()
-              .map((li: CheerioElement) => {
-                const $li: Cheerio = $(li);
-                const a: Cheerio = $li.children('a').first();
-
-                return {
-                  chapter_name: a.text(),
-                  chapter_link: a.attr('href'),
-                  time: $li.children('i.time').first().text(),
-                };
-              });
-
-            const view = ((): string | undefined => {
-              let html = figure.find('div > div.view > span').html();
-              if (!html) {
-                return;
-              }
-              html = html.replace(/\s{2,}/g, ' ').trim();
-              return (/((\d{1,3})(\.)?)+/g.exec(html) || [undefined])[0];
-            })();
+            const chapter_name = $liChapter.find('a').text();
+            const chapter_link = $liChapter.find('a').attr('href');
+            const time = $liChapter.find('i').text();
 
             return {
-              thumbnail: figure.find('div > a > img').attr('data-original'),
-              title: $e.find('figcaption > h3 > a').text(),
-              last_chapters: chapters,
-              link: figure.find('div > a').attr('href'),
-              view: view,
+              chapter_name,
+              chapter_link,
+              time,
             };
           });
 
-        resolve(comics);
+        return {
+          title,
+          view,
+          link,
+          thumbnail,
+          last_chapters,
+        };
       });
-    });
   }
 
   topMonthComics(): Promise<TopMonthComic[]> {
