@@ -16,66 +16,39 @@ const util_1 = require("../util");
 class Crawler {
     chapterDetail(link) {
         return __awaiter(this, void 0, void 0, function* () {
-            const $ = cheerio_1.default.load(yield util_1.GET(link));
-            const divCenter = $('div#ctl00_divCenter');
-            const chapterName = divCenter.find('h1.txt-primary > span').text().replace(/[- ]+/, '').trim();
-            let lastUpdated = divCenter.find('div.container > div.top > i').text();
-            lastUpdated = lastUpdated.substring(lastUpdated.indexOf(':') + 1, lastUpdated.length - 1).trim();
-            const detail = divCenter.find('.reading-detail.box_doc');
-            const images = detail.children('.page-chapter')
+            const body = yield util_1.GET(link);
+            const $ = cheerio_1.default.load(body);
+            const content_left = $('div.content_left');
+            const images = content_left.find('div.list_img > img')
                 .toArray()
-                .map(page => $(page).children('img').attr('data-original'));
-            let htmlContent;
-            if (images.length === 0) {
-                htmlContent = detail.find('.content-words').html();
-                if (htmlContent)
-                    htmlContent = util_1.escapeHTML(htmlContent);
-            }
-            if (htmlContent === null)
-                htmlContent = undefined;
-            const chapterId = (() => {
-                const array = link.split('/');
-                return +array[array.length - 1];
-            })();
-            const body = yield util_1.GET(`http://www.nettruyen.com/Comic/Services/ComicService.asmx/ProcessChapterLoader?chapterId=${chapterId}&commentId=0`);
-            const allChapters = JSON.parse(body)
-                .chapters
-                .map((c) => {
-                return Object.assign({}, c, { url: `http://www.nettruyen.com${c.url}` });
+                .map(img => $(img).attr('src'));
+            const chapters = content_left.find('div.next_prev_chapter > div.next_prev > select#list_chapters1 > option')
+                .toArray()
+                .map(option => {
+                const $option = $(option);
+                return {
+                    chapter_name: $option.text(),
+                    chapter_link: $option.attr('value'),
+                };
             });
-            const indexOfCurrentChapter = allChapters.findIndex(c => c.chapterId === chapterId);
-            const prevChapterLink = (() => {
-                const prevChapter = allChapters[indexOfCurrentChapter + 1];
-                return prevChapter ? prevChapter.url : undefined;
+            const currentIndex = chapters.findIndex(chapter => chapter.chapter_link === link);
+            const prev_chapter_link = (() => {
+                const prev = chapters[currentIndex + 1];
+                return prev ? prev.chapter_link : undefined;
             })();
-            const nextChapterLink = (() => {
-                const nextChapter = allChapters[indexOfCurrentChapter - 1];
-                return nextChapter ? nextChapter.url : undefined;
+            const next_chapter_link = (() => {
+                const next = chapters[currentIndex - 1];
+                return next ? next.chapter_link : undefined;
             })();
-            const chapterDetail = {
+            const chapter_name = $('section#breadcrumb_custom li:last-child').text().trim();
+            return {
+                images,
+                prev_chapter_link,
+                next_chapter_link,
+                chapters,
                 chapter_link: link,
-                chapter_name: chapterName,
-                images: images.map(image => {
-                    if (image.startsWith('//proxy.truyen.cloud')) {
-                        const url = image.substring(image.indexOf('?') + 1).split('&')[0];
-                        return url.substring(url.indexOf('=') + 1);
-                    }
-                    else {
-                        return image;
-                    }
-                }),
-                html_content: htmlContent,
-                time: lastUpdated,
-                prev_chapter_link: prevChapterLink,
-                next_chapter_link: nextChapterLink,
-                chapters: allChapters.map(c => {
-                    return {
-                        chapter_name: c.name,
-                        chapter_link: c.url
-                    };
-                }),
+                chapter_name,
             };
-            return chapterDetail;
         });
     }
 }
