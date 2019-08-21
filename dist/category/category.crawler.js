@@ -11,36 +11,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __importDefault(require("request"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
+const category_descriptions_1 = __importDefault(require("./category_descriptions"));
 class Crawler {
-    constructor() {
-        this.ref = firebase_admin_1.default.database().ref('comic_app');
-    }
+    constructor() { this.ref = firebase_admin_1.default.database().ref('comic_app'); }
     allCategories() {
-        return new Promise((resolve, reject) => {
-            request_1.default.get('http://www.nettruyen.com/', (error, _response, body) => __awaiter(this, void 0, void 0, function* () {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                const $ = cheerio_1.default.load(body);
-                const categories = $('nav.main-nav ul.dropdown-menu.megamenu div.col-sm-3 ul.nav li a')
-                    .toArray()
-                    .map(element => {
-                    const $element = $(element);
-                    return {
-                        link: $element.attr('href'),
-                        name: $element.attr('title') || $element.find('strong').text(),
-                        description: $element.attr('data-title'),
-                    };
-                });
-                const images = yield this.fetchImagesIfNeeded(categories.map(c => c.link));
-                resolve(categories.map((c) => (Object.assign({}, c, { thumbnail: images[c.link] }))));
-            }));
+        return __awaiter(this, void 0, void 0, function* () {
+            const body = yield util_1.GET('https://ww2.mangafox.online/');
+            const categories = this.getCategories(body);
+            const images = yield this.fetchImagesIfNeeded(categories.map(c => c.link));
+            return categories.map((c) => {
+                const link = c.link;
+                return Object.assign({}, c, { thumbnail: images[link], description: category_descriptions_1.default[link] });
+            });
         });
+    }
+    getCategories(body) {
+        const $ = cheerio_1.default.load(body);
+        const categories = $('div.content_right > div.danhmuc > table > tbody > tr > td')
+            .toArray()
+            .map(td => {
+            const $td = $(td);
+            return {
+                link: $td.find('a').attr('href'),
+                name: $td.find('a').text().trim(),
+            };
+        });
+        return categories.slice(0, categories.length - 1);
     }
     fetchImagesIfNeeded(links) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,6 +64,7 @@ class Crawler {
                 // this is not the first time, not need await, data will be saved to firebase database for later
                 // and current data is valid, just return
                 // tslint:disable-next-line: no-floating-promises
+                // noinspection JSIgnoredPromiseFromCall
                 this.getAndSaveImages(links);
                 return images;
             }
@@ -78,31 +78,25 @@ class Crawler {
      *
      * @param categoryLink category url
      */
-    getFirstImage(categoryLink) {
-        return new Promise((resolve, reject) => {
-            request_1.default.get(categoryLink, (error, _response, body) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                const $ = cheerio_1.default.load(body);
-                const $e = $($('div#ctl00_divCenter').find('div.row div.item')[0]);
-                const thumbnail = $e.children('figure').first().find('div > a > img').attr('data-original');
-                resolve({ [categoryLink]: thumbnail });
-            });
+    static getFirstImage(categoryLink) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const body = yield util_1.GET(categoryLink);
+            const thumbnail = util_1.bodyToComicList(body)[0].thumbnail;
+            util_1.log(`[END  ] fetch ${thumbnail}`);
+            return { [categoryLink]: thumbnail };
         });
     }
     /**
-    *
-    * @param links category urls
-    */
+     *
+     * @param links category urls
+     */
     getAndSaveImages(links) {
         return __awaiter(this, void 0, void 0, function* () {
             // get
             let images = {};
             for (const link of links) {
                 util_1.log(`[START] fetch ${link}`);
-                const data = yield this.getFirstImage(link);
+                const data = yield Crawler.getFirstImage(link);
                 images = Object.assign({}, images, data);
             }
             // save

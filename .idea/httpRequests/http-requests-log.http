@@ -1,3 +1,33 @@
+GET http://localhost:3000/chapter_detail?link=http://www.nettruyen.com/truyen-tranh/toi-thang-cap-mot-minh-truyen-chu/chap-233.5/477603
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-20T073115.200.json
+
+###
+
+GET http://localhost:3000/chapter_detail?link=https://ww2.mangafox.online/his-favorite-idol-moves-in-next-door-the-romcom/chapter-10-816000706255121
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+GET http://localhost:3000/comic_detail?link=https://ww2.mangafox.online/his-favorite-idol-moves-in-next-door-the-romcom
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-20T072545.200.json
+
+###
+
+GET http://localhost:3000/updated_comics
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-08-20T072519.200.json
+
+###
+
 GET http://localhost:3000/search_comic?query=hi
 Accept: */*
 Cache-Control: no-cache

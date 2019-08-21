@@ -1,42 +1,44 @@
-import request, { Response } from 'request';
 import cheerio from 'cheerio';
 import { Category } from "./category.interface";
-import { log, encode, decode, isValidURL } from "../util";
+import { bodyToComicList, decode, encode, GET, isValidURL, log } from "../util";
 import admin from "firebase-admin";
+import descriptions from './category_descriptions';
 
 export class Crawler {
   private static TIMEOUT = 60 * 60 * 1000; // 1 hour
   private readonly ref: admin.database.Reference;
 
-  constructor() {
-    this.ref = admin.database().ref('comic_app');
-  }
+  constructor() { this.ref = admin.database().ref('comic_app'); }
 
-  allCategories(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      request.get('http://www.nettruyen.com/', async (error: any, _response: Response, body: any) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+  async allCategories(): Promise<Category[]> {
+    const body = await GET('https://ww2.mangafox.online/');
+    const categories = this.getCategories(body);
 
-        const $: CheerioStatic = cheerio.load(body);
-        const categories = $('nav.main-nav ul.dropdown-menu.megamenu div.col-sm-3 ul.nav li a')
-          .toArray()
-          .map(element => {
-            const $element = $(element);
-            return {
-              link: $element.attr('href'),
-              name: $element.attr('title') || $element.find('strong').text(),
-              description: $element.attr('data-title'),
-            };
-          });
-        const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
-        resolve(categories.map((c): Category => ({ ...c, thumbnail: images[c.link] })));
-      });
+    const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
+
+    return categories.map((c): Category => {
+      const link = c.link;
+      return {
+        ...c,
+        thumbnail: images[link],
+        description: descriptions[link]
+      };
     });
   }
 
+  private getCategories(body: string) {
+    const $ = cheerio.load(body);
+    const categories = $('div.content_right > div.danhmuc > table > tbody > tr > td')
+      .toArray()
+      .map(td => {
+        const $td = $(td);
+        return {
+          link: $td.find('a').attr('href'),
+          name: $td.find('a').text().trim(),
+        };
+      });
+    return categories.slice(0, categories.length - 1);
+  }
 
   private async fetchImagesIfNeeded(links: string[]): Promise<{ [p: string]: string }> {
     // get data from firebase
@@ -63,6 +65,7 @@ export class Crawler {
       // this is not the first time, not need await, data will be saved to firebase database for later
       // and current data is valid, just return
       // tslint:disable-next-line: no-floating-promises
+      // noinspection JSIgnoredPromiseFromCall
       this.getAndSaveImages(links);
       return images;
     } else {
@@ -72,34 +75,26 @@ export class Crawler {
   }
 
   /**
-   * 
+   *
    * @param categoryLink category url
    */
-  private getFirstImage(categoryLink: string): Promise<{ [p: string]: string }> {
-    return new Promise((resolve, reject) => {
-      request.get(categoryLink, (error: any, _response: Response, body: any) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        const $ = cheerio.load(body);
-        const $e: Cheerio = $($('div#ctl00_divCenter').find('div.row div.item')[0]);
-        const thumbnail = $e.children('figure').first().find('div > a > img').attr('data-original');
-        resolve({ [categoryLink]: thumbnail });
-      });
-    });
+  private static async getFirstImage(categoryLink: string): Promise<{ [p: string]: string }> {
+    const body = await GET(categoryLink);
+    const thumbnail = bodyToComicList(body)[0].thumbnail;
+    log(`[END  ] fetch ${thumbnail}`);
+    return { [categoryLink]: thumbnail };
   }
 
   /**
-  * 
-  * @param links category urls
-  */
+   *
+   * @param links category urls
+   */
   private async getAndSaveImages(links: string[]): Promise<{ [p: string]: string }> {
     // get
     let images: { [p: string]: string } = {};
     for (const link of links) {
       log(`[START] fetch ${link}`);
-      const data = await this.getFirstImage(link);
+      const data = await Crawler.getFirstImage(link);
       images = { ...images, ...data };
     }
 
