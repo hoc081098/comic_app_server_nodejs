@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const search_crawler_1 = require("./search.crawler");
 const util_1 = require("../util");
 class Controller {
-    constructor(crawler) {
-        this.crawler = crawler;
+    constructor() {
         this.searchComic = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { query } = req.query;
@@ -33,7 +33,8 @@ class Controller {
                         status_code: 500
                     });
                 }
-                const comics = yield this.crawler.searchComic(query);
+                const page = parseInt(req.query.page) || 1;
+                const comics = yield search_crawler_1.Crawler.searchComic(query, page);
                 res.status(200).json(comics);
             }
             catch (e) {

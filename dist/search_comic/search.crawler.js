@@ -1,38 +1,19 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __importDefault(require("request"));
-const cheerio_1 = __importDefault(require("cheerio"));
+const util_1 = require("../util");
 class Crawler {
-    searchComic(query) {
-        const link = `http://www.nettruyen.com/Comic/Services/SuggestSearch.ashx?q=${query}`;
-        return new Promise((resolve, reject) => {
-            request_1.default.get(link, (error, _response, body) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                const $ = cheerio_1.default.load(body);
-                const comics = $('li')
-                    .toArray()
-                    .map((li) => {
-                    const $li = $(li);
-                    return {
-                        title: $li.find('h3').text(),
-                        thumbnail: $li.find('img').attr('src'),
-                        link: $li.find('a').attr('href'),
-                        last_chapter_name: $li.find('h4 > i').first().text(),
-                        category_names: $li.find('h4 > i')
-                            .last()
-                            .text()
-                            .split(/, +/g)
-                            .map((name) => name.trim())
-                    };
-                });
-                resolve(comics);
-            });
+    static searchComic(query, page) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const body = yield util_1.GET(`https://ww2.mangafox.online/search/${query}/page/${page}`);
+            return util_1.bodyToComicList(body);
         });
     }
 }

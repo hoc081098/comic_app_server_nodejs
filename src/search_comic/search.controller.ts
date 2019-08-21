@@ -4,10 +4,6 @@ import { RequestHandler } from "express";
 import { log } from "../util";
 
 export class Controller {
-  constructor(
-    private readonly crawler: Crawler
-  ) { }
-
   searchComic: RequestHandler = async (req, res, _next) => {
     try {
       const { query } = req.query;
@@ -31,7 +27,9 @@ export class Controller {
           });
       }
 
-      const comics = await this.crawler.searchComic(query);
+      const page = parseInt(req.query.page) || 1;
+
+      const comics = await Crawler.searchComic(query, page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);
