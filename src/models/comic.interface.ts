@@ -1,6 +1,6 @@
 type _Comic = {
   thumbnail: string;
-  view?: string;
+  view: string;
   link: string;
   last_chapters: Readonly<{
     chapter_name: string;
