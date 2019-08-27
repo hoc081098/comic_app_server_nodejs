@@ -33,6 +33,8 @@ export class Crawler {
 
     const chapter_name = $('section#breadcrumb_custom li:last-child').text().trim();
 
+    const comic_name = $($('section#breadcrumb_custom li').toArray()[2]).text().trim();
+
     return {
       images,
       prev_chapter_link,
@@ -40,6 +42,7 @@ export class Crawler {
       chapters,
       chapter_link: link,
       chapter_name,
+      comic_name
     };
   }
 }
