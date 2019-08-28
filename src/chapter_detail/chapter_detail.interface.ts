@@ -2,6 +2,7 @@ type _ChapterDetail = {
   images: string[];
   chapter_name: string;
   comic_name: string;
+  comic_link: string;
   chapter_link: string;
   prev_chapter_link?: string;
   next_chapter_link?: string;

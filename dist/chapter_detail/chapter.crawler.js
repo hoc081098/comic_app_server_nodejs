@@ -41,7 +41,9 @@ class Crawler {
                 return next ? next.chapter_link : undefined;
             })();
             const chapter_name = $('section#breadcrumb_custom li:last-child').text().trim();
-            const comic_name = $($('section#breadcrumb_custom li').toArray()[2]).text().trim();
+            const chapterNameA = $($('section#breadcrumb_custom li').toArray()[2]).find('a');
+            const comic_name = chapterNameA.attr('title').trim();
+            const comic_link = chapterNameA.attr('href');
             return {
                 images,
                 prev_chapter_link,
@@ -49,7 +51,8 @@ class Crawler {
                 chapters,
                 chapter_link: link,
                 chapter_name,
-                comic_name
+                comic_name,
+                comic_link,
             };
         });
     }
