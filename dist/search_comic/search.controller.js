@@ -22,7 +22,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Require 'query' to searchComic comic detail",
-                        status_code: 500
+                        status_code: 422
                     });
                 }
                 if (typeof query !== 'string') {
@@ -30,7 +30,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Invalid 'query' to searchComic comic detail",
-                        status_code: 500
+                        status_code: 422
                     });
                 }
                 const page = parseInt(req.query.page) || 1;

@@ -16,7 +16,7 @@ export class Controller {
           .status(422)
           .json({
             message: "Require 'category link' to get category detail",
-            status_code: 500
+            status_code: 422
           } as Error);
       }
       if (typeof link !== 'string' || !isValidURL(link)) {
@@ -24,7 +24,7 @@ export class Controller {
           .status(422)
           .json({
             message: "Invalid 'category link' to get category detail",
-            status_code: 500
+            status_code: 422
           } as Error);
       }
 

@@ -22,7 +22,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Require 'comic link' to get comic detail",
-                        status_code: 500
+                        status_code: 542200
                     });
                 }
                 if (typeof link !== 'string' || !util_1.isValidURL(link)) {
@@ -30,7 +30,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Invalid 'comic link' to get comic detail",
-                        status_code: 500
+                        status_code: 422
                     });
                 }
                 const comic = yield this.crawler.comicDetail(link);

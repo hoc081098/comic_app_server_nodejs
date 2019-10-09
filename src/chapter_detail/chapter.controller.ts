@@ -19,7 +19,7 @@ export class Controller {
           .status(422)
           .json(<Error>{
             message: "Require 'chapter link' to get chapter detail",
-            status_code: 500
+            status_code: 422
           });
       }
       if (typeof link !== 'string' || !isValidURL(link)) {
@@ -27,7 +27,7 @@ export class Controller {
           .status(422)
           .json(<Error>{
             message: "Invalid 'chapter link' to get chapter detail",
-            status_code: 500
+            status_code: 422
           });
       }
 
@@ -41,5 +41,5 @@ export class Controller {
           status_code: 500
         });
     }
-  };
+  }
 }

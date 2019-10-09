@@ -22,7 +22,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Require 'chapter link' to get chapter detail",
-                        status_code: 500
+                        status_code: 422
                     });
                 }
                 if (typeof link !== 'string' || !util_1.isValidURL(link)) {
@@ -30,7 +30,7 @@ class Controller {
                         .status(422)
                         .json({
                         message: "Invalid 'chapter link' to get chapter detail",
-                        status_code: 500
+                        status_code: 422
                     });
                 }
                 const chapter = yield this.crawler.chapterDetail(link);
