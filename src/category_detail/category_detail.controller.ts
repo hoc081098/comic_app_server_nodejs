@@ -28,7 +28,8 @@ export class Controller {
           } as Error);
       }
 
-      const comics = await Crawler.getComics(link);
+      const page = parseInt(req.query.page) || 1;
+      const comics = await Crawler.getComics(link, page);
       res.status(200).json(comics);
     } catch (e) {
       log(e);

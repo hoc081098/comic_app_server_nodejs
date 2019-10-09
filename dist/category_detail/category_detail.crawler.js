@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("../util");
 class Crawler {
-    static getComics(categoryLink) {
+    static getComics(categoryLink, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const body = yield util_1.GET(categoryLink);
+            const body = yield util_1.GET(`${categoryLink}/page/${page}`);
             return util_1.bodyToComicList(body);
         });
     }

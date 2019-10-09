@@ -33,7 +33,8 @@ class Controller {
                         status_code: 500
                     });
                 }
-                const comics = yield category_detail_crawler_1.Crawler.getComics(link);
+                const page = parseInt(req.query.page) || 1;
+                const comics = yield category_detail_crawler_1.Crawler.getComics(link, page);
                 res.status(200).json(comics);
             }
             catch (e) {
