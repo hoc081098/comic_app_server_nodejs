@@ -17,6 +17,7 @@ const detail_1 = __importDefault(require("./detail"));
 const chapter_detail_1 = __importDefault(require("./chapter_detail"));
 const search_comic_1 = __importDefault(require("./search_comic"));
 const category_1 = __importDefault(require("./category"));
+const category_detail_1 = __importDefault(require("./category_detail"));
 const app = express_1.default();
 /**
  * Basic setup
@@ -34,6 +35,7 @@ app.use('/comic_detail', detail_1.default);
 app.use('/chapter_detail', chapter_detail_1.default);
 app.use('/search_comic', search_comic_1.default);
 app.use('/category', category_1.default);
+app.use('/category_detail', category_detail_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));

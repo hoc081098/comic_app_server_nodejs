@@ -15,6 +15,7 @@ import detailRouter from './detail';
 import chapterDetailRouter from './chapter_detail';
 import searchComicRouter from './search_comic';
 import categoryRouter from './category';
+import categoryDetailRouter from './category_detail';
 
 import { Error } from './models/error';
 // tslint:disable-next-line: no-implicit-dependencies
@@ -39,6 +40,7 @@ app.use('/comic_detail', detailRouter);
 app.use('/chapter_detail', chapterDetailRouter);
 app.use('/search_comic', searchComicRouter);
 app.use('/category', categoryRouter);
+app.use('/category_detail', categoryDetailRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: any, res: any, next: any) {

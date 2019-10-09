@@ -65,6 +65,7 @@ class Crawler {
                 // and current data is valid, just return
                 // tslint:disable-next-line: no-floating-promises
                 // noinspection JSIgnoredPromiseFromCall
+                // tslint:disable-next-line: no-floating-promises
                 this.getAndSaveImages(links);
                 return images;
             }
