@@ -8,5 +8,6 @@ const category_detail_controller_1 = require("./category_detail.controller");
 const controller = new category_detail_controller_1.Controller();
 const router = express_1.default.Router();
 router.get('/', controller.getCategoryDetail);
+router.get('/popular', controller.getPopulars);
 exports.default = router;
 //# sourceMappingURL=index.js.map

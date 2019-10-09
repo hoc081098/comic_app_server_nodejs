@@ -40,4 +40,39 @@ export class Controller {
       res.status(500).json(error);
     }
   }
+
+  getPopulars: RequestHandler = async (req, res) => {
+    try {
+      const { link } = req.query;
+      log({ link });
+
+      // check link is valid?
+      if (!link) {
+        return res
+          .status(422)
+          .json({
+            message: "Require 'category link' to get category detail",
+            status_code: 422
+          } as Error);
+      }
+      if (typeof link !== 'string' || !isValidURL(link)) {
+        return res
+          .status(422)
+          .json({
+            message: "Invalid 'category link' to get category detail",
+            status_code: 422
+          } as Error);
+      }
+
+      const comics = await Crawler.getPopularComics(link);
+      res.status(200).json(comics);
+    } catch (e) {
+      log(e);
+      const error: Error = {
+        message: 'Internal server error',
+        status_code: 500
+      };
+      res.status(500).json(error);
+    }
+  }
 }

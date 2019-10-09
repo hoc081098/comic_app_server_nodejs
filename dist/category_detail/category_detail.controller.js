@@ -46,6 +46,39 @@ class Controller {
                 res.status(500).json(error);
             }
         });
+        this.getPopulars = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { link } = req.query;
+                util_1.log({ link });
+                // check link is valid?
+                if (!link) {
+                    return res
+                        .status(422)
+                        .json({
+                        message: "Require 'category link' to get category detail",
+                        status_code: 422
+                    });
+                }
+                if (typeof link !== 'string' || !util_1.isValidURL(link)) {
+                    return res
+                        .status(422)
+                        .json({
+                        message: "Invalid 'category link' to get category detail",
+                        status_code: 422
+                    });
+                }
+                const comics = yield category_detail_crawler_1.Crawler.getPopularComics(link);
+                res.status(200).json(comics);
+            }
+            catch (e) {
+                util_1.log(e);
+                const error = {
+                    message: 'Internal server error',
+                    status_code: 500
+                };
+                res.status(500).json(error);
+            }
+        });
     }
 }
 exports.Controller = Controller;
