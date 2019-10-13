@@ -1,18 +1,10 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const category_detail_crawler_1 = require("./category_detail.crawler");
 const util_1 = require("../util");
 class Controller {
     constructor() {
-        this.getCategoryDetail = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getCategoryDetail = async (req, res) => {
             try {
                 const { link } = req.query;
                 util_1.log({ link });
@@ -34,7 +26,7 @@ class Controller {
                     });
                 }
                 const page = parseInt(req.query.page) || 1;
-                const comics = yield category_detail_crawler_1.Crawler.getComics(link, page);
+                const comics = await category_detail_crawler_1.Crawler.getComics(link, page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -45,8 +37,8 @@ class Controller {
                 };
                 res.status(500).json(error);
             }
-        });
-        this.getPopulars = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.getPopulars = async (req, res) => {
             try {
                 const { link } = req.query;
                 util_1.log({ link });
@@ -67,7 +59,7 @@ class Controller {
                         status_code: 422
                     });
                 }
-                const comics = yield category_detail_crawler_1.Crawler.getPopularComics(link);
+                const comics = await category_detail_crawler_1.Crawler.getPopularComics(link);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -78,7 +70,7 @@ class Controller {
                 };
                 res.status(500).json(error);
             }
-        });
+        };
     }
 }
 exports.Controller = Controller;

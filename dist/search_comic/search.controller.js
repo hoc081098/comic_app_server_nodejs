@@ -1,18 +1,10 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const search_crawler_1 = require("./search.crawler");
 const util_1 = require("../util");
 class Controller {
     constructor() {
-        this.searchComic = (req, res, _next) => __awaiter(this, void 0, void 0, function* () {
+        this.searchComic = async (req, res, _next) => {
             try {
                 const { query } = req.query;
                 util_1.log({ query });
@@ -34,7 +26,7 @@ class Controller {
                     });
                 }
                 const page = parseInt(req.query.page) || 1;
-                const comics = yield search_crawler_1.Crawler.searchComic(query, page);
+                const comics = await search_crawler_1.Crawler.searchComic(query, page);
                 res.status(200).json(comics);
             }
             catch (e) {
@@ -44,7 +36,7 @@ class Controller {
                     status_code: 500
                 });
             }
-        });
+        };
     }
 }
 exports.Controller = Controller;
