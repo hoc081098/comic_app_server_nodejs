@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Controller = void 0;
 const util_1 = require("../util");
 class Controller {
     constructor(crawler) {

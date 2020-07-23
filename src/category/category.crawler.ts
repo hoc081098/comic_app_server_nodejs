@@ -5,7 +5,7 @@ import admin from "firebase-admin";
 import descriptions from './category_descriptions';
 
 export class Crawler {
-  private static TIMEOUT = 60 * 60 * 1000; // 1 hour
+  private static TIMEOUT = 24 * 60 * 60 * 1000; // 24 hour
   private readonly ref: admin.database.Reference;
 
   constructor() { this.ref = admin.database().ref('comic_app'); }
@@ -42,21 +42,26 @@ export class Crawler {
 
   private async fetchImagesIfNeeded(links: string[]): Promise<{ [p: string]: string }> {
     // get data from firebase
-    let images: { [key: string]: string };
-    let lastFetch: number | undefined;
-    [images, lastFetch] = await Promise.all(
-      ['images', 'last_fetch']
-        .map(path => this.ref
-          .child(path)
-          .once('value')
-          .then(snapshot => snapshot.val())
-        )
-    );
-    images = Object.keys(images).reduce((acc, k) => ({ ...acc, [decode(k)]: images[k] }), {});
+
+    const promises = ['images', 'last_fetch'].map(path => this.ref
+      .child(path)
+      .once('value')
+      .then(snapshot => snapshot.val())) as [Promise<{ [key: string]: string } | undefined | null>, Promise<number | undefined | null>];
+
+    const [imagesNullable, lastFetch] = await Promise.all(promises);
+    const images: { [p: string]: any } = Object.keys(imagesNullable ?? {})
+      .reduce(
+        (acc, k) => ({ ...acc, [decode(k)]: imagesNullable?.[k] }),
+        {}
+      );
     log({ images, lastFetch });
 
-    const haveNotImages = !images || links.some(link => !images[link] || !isValidURL(images[link]));
+    const haveNotImages = links.some(link => {
+      const url = images[link];
+      return !url || !isValidURL(url);
+    });
     log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
+
     if (haveNotImages || !lastFetch) {
       // first time or invalid data, need await
       return await this.getAndSaveImages(links);
@@ -66,7 +71,6 @@ export class Crawler {
       // and current data is valid, just return
       // tslint:disable-next-line: no-floating-promises
       // noinspection JSIgnoredPromiseFromCall
-      // tslint:disable-next-line: no-floating-promises
       this.getAndSaveImages(links);
       return images;
     } else {

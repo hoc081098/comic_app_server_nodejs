@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Crawler = void 0;
 const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
@@ -15,7 +16,11 @@ class Crawler {
         const images = await this.fetchImagesIfNeeded(categories.map(c => c.link));
         return categories.map((c) => {
             const link = c.link;
-            return Object.assign({}, c, { thumbnail: images[link], description: category_descriptions_1.default[link] });
+            return {
+                ...c,
+                thumbnail: images[link],
+                description: category_descriptions_1.default[link]
+            };
         });
     }
     getCategories(body) {
@@ -33,16 +38,18 @@ class Crawler {
     }
     async fetchImagesIfNeeded(links) {
         // get data from firebase
-        let images;
-        let lastFetch;
-        [images, lastFetch] = await Promise.all(['images', 'last_fetch']
-            .map(path => this.ref
+        const promises = ['images', 'last_fetch'].map(path => this.ref
             .child(path)
             .once('value')
-            .then(snapshot => snapshot.val())));
-        images = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.decode(k)]: images[k] })), {});
+            .then(snapshot => snapshot.val()));
+        const [imagesNullable, lastFetch] = await Promise.all(promises);
+        const images = Object.keys(imagesNullable !== null && imagesNullable !== void 0 ? imagesNullable : {})
+            .reduce((acc, k) => ({ ...acc, [util_1.decode(k)]: imagesNullable === null || imagesNullable === void 0 ? void 0 : imagesNullable[k] }), {});
         util_1.log({ images, lastFetch });
-        const haveNotImages = !images || links.some(link => !images[link] || !util_1.isValidURL(images[link]));
+        const haveNotImages = links.some(link => {
+            const url = images[link];
+            return !url || !util_1.isValidURL(url);
+        });
         util_1.log({ haveNotImages, time: lastFetch ? Date.now() - lastFetch : undefined });
         if (haveNotImages || !lastFetch) {
             // first time or invalid data, need await
@@ -54,7 +61,6 @@ class Crawler {
             // and current data is valid, just return
             // tslint:disable-next-line: no-floating-promises
             // noinspection JSIgnoredPromiseFromCall
-            // tslint:disable-next-line: no-floating-promises
             this.getAndSaveImages(links);
             return images;
         }
@@ -83,10 +89,10 @@ class Crawler {
         for (const link of links) {
             util_1.log(`[START] fetch ${link}`);
             const data = await Crawler.getFirstImage(link);
-            images = Object.assign({}, images, data);
+            images = { ...images, ...data };
         }
         // save
-        const encodedImages = Object.keys(images).reduce((acc, k) => (Object.assign({}, acc, { [util_1.encode(k)]: images[k] })), {});
+        const encodedImages = Object.keys(images).reduce((acc, k) => ({ ...acc, [util_1.encode(k)]: images[k] }), {});
         await Promise.all([
             this.ref.child('images').set(encodedImages),
             this.ref.child('last_fetch').set(Date.now()),
@@ -95,6 +101,6 @@ class Crawler {
         return images;
     }
 }
-Crawler.TIMEOUT = 60 * 60 * 1000; // 1 hour
 exports.Crawler = Crawler;
+Crawler.TIMEOUT = 24 * 60 * 60 * 1000; // 24 hour
 //# sourceMappingURL=category.crawler.js.map
