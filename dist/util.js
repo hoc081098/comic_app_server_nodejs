@@ -118,14 +118,18 @@ function bodyToComicListNew(body) {
         const $genres_item_info = $divComic.find('div.genres-item-info');
         const a = $genres_item_info.find('h3 > a');
         const $genres_item_chap = $genres_item_info.find('a.genres-item-chap');
+        const chapter_link = $genres_item_chap.attr('href');
+        const chapter_name = $genres_item_chap.text();
         return {
-            last_chapters: [
-                {
-                    chapter_name: $genres_item_chap.text(),
-                    chapter_link: $genres_item_chap.attr('href'),
-                    time: '',
-                },
-            ],
+            last_chapters: chapter_link && chapter_name
+                ? [
+                    {
+                        chapter_name,
+                        chapter_link,
+                        time: $genres_item_info.find('span.genres-item-time').text(),
+                    },
+                ]
+                : [],
             link: a.attr('href'),
             thumbnail: $divComic.find('img').attr('src'),
             title: a.text(),
