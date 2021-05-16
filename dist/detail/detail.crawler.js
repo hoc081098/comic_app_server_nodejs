@@ -64,7 +64,7 @@ class Crawler {
             }
         });
         const panel_story_info_description = panel_story_info.find('div.panel-story-info-description').text();
-        const shortened_content = panel_story_info_description.substring(0, panel_story_info_description.indexOf('…')) + '.';
+        const shortened_content = panel_story_info_description.substring(panel_story_info_description.indexOf(":") + 2);
         const chapters = content_left.find('div.panel-story-chapter-list > ul.row-content-chapter > li')
             .toArray()
             .map((li) => {
@@ -74,7 +74,7 @@ class Crawler {
                 chapter_name: a.text().trim(),
                 chapter_link: a.attr('href'),
                 view: $li.find('span.chapter-view').text().trim(),
-                time: $li.find('div.chapter-time').text().trim(),
+                time: $li.find('span.chapter-time').text().trim(),
             };
         });
         return {
