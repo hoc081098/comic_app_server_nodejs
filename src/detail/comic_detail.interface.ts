@@ -22,6 +22,8 @@ type _ComicDetail = {
   }[];
   title: string;
   related_comics: Comic[],
+  alternative: string | null,
+  status: string | null,
 };
 
 export type ComicDetail = Readonly<_ComicDetail>;

@@ -31,7 +31,7 @@ export class Controller {
           } as Error);
       }
 
-      const comic = await this.crawler.comicDetail(link);
+      const comic = await this.crawler.comicDetailNew(link);
       res.status(200).json(comic);
     } catch (e) {
       log(e);
