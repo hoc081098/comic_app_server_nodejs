@@ -7,6 +7,23 @@ exports.Crawler = void 0;
 const cheerio_1 = __importDefault(require("cheerio"));
 const util_1 = require("../util");
 class Crawler {
+    async chapterDetailNew(chapter_link) {
+        const body = await util_1.GET(chapter_link);
+        const $ = cheerio_1.default.load(body);
+        const body_site = $('div.body-site');
+        const container_chapter_reader = body_site.find('div.container-chapter-reader');
+        const images = container_chapter_reader.find('img').toArray().map(e => e.attribs.src);
+        return {
+            chapter_link,
+            chapter_name: "",
+            chapters: [],
+            comic_link: "",
+            comic_name: "",
+            images,
+            next_chapter_link: "",
+            prev_chapter_link: ""
+        };
+    }
     async chapterDetail(link) {
         const body = await util_1.GET(link);
         const $ = cheerio_1.default.load(body);

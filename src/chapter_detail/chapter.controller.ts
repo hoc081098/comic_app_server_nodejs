@@ -31,7 +31,7 @@ export class Controller {
           });
       }
 
-      const chapter = await this.crawler.chapterDetail(link);
+      const chapter = await this.crawler.chapterDetailNew(link);
       res.status(200).json(chapter);
     } catch (e) {
       log(e);
