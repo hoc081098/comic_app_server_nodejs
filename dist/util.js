@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bodyToComicList = exports.GET = exports.decode = exports.encode = exports.escapeHTML = exports.log = exports.isValidURL = void 0;
+exports.bodyToComicListNew = exports.bodyToComicList = exports.GET = exports.decode = exports.encode = exports.escapeHTML = exports.log = exports.isValidURL = void 0;
 const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 console.log(`NODEJS running: env = '${env}'`);
 if (env === 'development') {
@@ -60,7 +60,7 @@ exports.decode = decode;
  */
 function GET(url) {
     return new Promise((resolve, reject) => {
-        request_1.default.get(url, (error, _response, body) => {
+        request_1.default.get(url, { timeout: 15000 }, (error, _response, body) => {
             if (error) {
                 reject(error);
                 return;
@@ -109,4 +109,33 @@ function bodyToComicList(body) {
     });
 }
 exports.bodyToComicList = bodyToComicList;
+function bodyToComicListNew(body) {
+    const $ = cheerio_1.default.load(body);
+    return $('div.panel-content-genres > div.content-genres-item')
+        .toArray()
+        .map((divComic) => {
+        const $divComic = $(divComic);
+        const $genres_item_info = $divComic.find('div.genres-item-info');
+        const a = $genres_item_info.find('h3 > a');
+        const $genres_item_chap = $genres_item_info.find('a.genres-item-chap');
+        const chapter_link = $genres_item_chap.attr('href');
+        const chapter_name = $genres_item_chap.text();
+        return {
+            last_chapters: chapter_link && chapter_name
+                ? [
+                    {
+                        chapter_name,
+                        chapter_link,
+                        time: $genres_item_info.find('span.genres-item-time').text(),
+                    },
+                ]
+                : [],
+            link: a.attr('href'),
+            thumbnail: $divComic.find('img').attr('src'),
+            title: a.text(),
+            view: $genres_item_info.find('span.genres-item-view').text(),
+        };
+    });
+}
+exports.bodyToComicListNew = bodyToComicListNew;
 //# sourceMappingURL=util.js.map

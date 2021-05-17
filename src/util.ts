@@ -61,13 +61,17 @@ const decode = (str: string) => str.replace(charCodesRegex, (match) => codeToCha
  */
 function GET(url: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    request.get(url, (error: any, _response: Response, body: any): void => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(body);
-    });
+    request.get(
+      url,
+      { timeout: 15_000 },
+      (error: any, _response: Response, body: any): void => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(body);
+      },
+    );
   });
 }
 
@@ -116,4 +120,35 @@ function bodyToComicList(body: string): Comic[] {
     });
 }
 
-export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList };
+function bodyToComicListNew(body: string): any[] {
+  const $: CheerioStatic = cheerio.load(body);
+
+  return $('div.panel-content-genres > div.content-genres-item')
+    .toArray()
+    .map((divComic: CheerioElement): Comic => {
+      const $divComic: Cheerio = $(divComic);
+      const $genres_item_info = $divComic.find('div.genres-item-info');
+      const a = $genres_item_info.find('h3 > a');
+      const $genres_item_chap = $genres_item_info.find('a.genres-item-chap');
+
+      const chapter_link = $genres_item_chap.attr('href');
+      const chapter_name = $genres_item_chap.text();
+      return {
+        last_chapters: chapter_link && chapter_name
+          ? [
+            {
+              chapter_name,
+              chapter_link,
+              time: $genres_item_info.find('span.genres-item-time').text(),
+            },
+          ]
+          : [],
+        link: a.attr('href'),
+        thumbnail: $divComic.find('img').attr('src'),
+        title: a.text(),
+        view: $genres_item_info.find('span.genres-item-view').text(),
+      };
+    });
+}
+
+export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList, bodyToComicListNew };

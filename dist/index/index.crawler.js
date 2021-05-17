@@ -4,16 +4,16 @@ exports.Crawler = void 0;
 const util_1 = require("../util");
 class Crawler {
     static async newestComics(page) {
-        const body = await util_1.GET(`https://ww2.mangafox.online/newmanga/page/${page}`);
-        return util_1.bodyToComicList(body);
+        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}?type=newest`);
+        return util_1.bodyToComicListNew(body);
     }
     static async updatedComics(page) {
-        const body = await util_1.GET(`https://ww2.mangafox.online/page/${page}`);
-        return util_1.bodyToComicList(body);
+        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}`);
+        return util_1.bodyToComicListNew(body);
     }
     static async mostViewedComics(page) {
-        const body = await util_1.GET(`https://ww2.mangafox.online/topmanga/page/${page}`);
-        return util_1.bodyToComicList(body);
+        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}?type=topview`);
+        return util_1.bodyToComicListNew(body);
     }
 }
 exports.Crawler = Crawler;
