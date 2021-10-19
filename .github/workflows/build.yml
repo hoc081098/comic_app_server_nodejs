@@ -16,5 +16,3 @@ jobs:
       - run: npm install
       - run: npm install -g typescript
       - run: tsc
-
-
