@@ -79,6 +79,7 @@ function GET(url: string): Promise<any> {
  * Parse body to list of comics
  * @param body string
  * @return a list of comics
+ * @deprecated
  */
 function bodyToComicList(body: string): Comic[] {
   const $ = cheerio.load(body);
@@ -120,7 +121,7 @@ function bodyToComicList(body: string): Comic[] {
     });
 }
 
-function bodyToComicListNew(body: string): any[] {
+function bodyToComicListNew(body: string): Comic[] {
   const $: CheerioStatic = cheerio.load(body);
 
   return $('div.panel-content-genres > div.content-genres-item')

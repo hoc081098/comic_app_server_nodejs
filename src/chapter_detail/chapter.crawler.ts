@@ -3,6 +3,27 @@ import { ChapterDetail } from "./chapter_detail.interface";
 import { GET } from "../util";
 
 export class Crawler {
+  async chapterDetailNew(chapter_link: string): Promise<ChapterDetail> {
+    const body = await GET(chapter_link);
+    const $ = cheerio.load(body);
+
+    const body_site = $('div.body-site');
+    const container_chapter_reader = body_site.find('div.container-chapter-reader');
+
+    const images = container_chapter_reader.find('img').toArray().map(e => e.attribs.src);
+
+    return {
+      chapter_link,
+      chapter_name: "",
+      chapters: [],
+      comic_link: "",
+      comic_name: "",
+      images,
+      next_chapter_link: "",
+      prev_chapter_link: ""
+    };
+  }
+
   async chapterDetail(link: string): Promise<ChapterDetail> {
     const body = await GET(link);
     const $ = cheerio.load(body);

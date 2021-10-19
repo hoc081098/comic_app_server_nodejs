@@ -4,15 +4,15 @@ exports.Crawler = void 0;
 const util_1 = require("../util");
 class Crawler {
     static async newestComics(page) {
-        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}?type=newest`);
+        const body = await util_1.GET(`https://manganato.com/genre-all/${page}?type=newest`);
         return util_1.bodyToComicListNew(body);
     }
     static async updatedComics(page) {
-        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}`);
+        const body = await util_1.GET(`https://manganato.com/genre-all/${page}`);
         return util_1.bodyToComicListNew(body);
     }
     static async mostViewedComics(page) {
-        const body = await util_1.GET(`https://manganelo.com/genre-all/${page}?type=topview`);
+        const body = await util_1.GET(`https://manganato.com/genre-all/${page}?type=topview`);
         return util_1.bodyToComicListNew(body);
     }
 }

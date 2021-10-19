@@ -26,7 +26,7 @@ class Controller {
                         status_code: 422
                     });
                 }
-                const chapter = await this.crawler.chapterDetail(link);
+                const chapter = await this.crawler.chapterDetailNew(link);
                 res.status(200).json(chapter);
             }
             catch (e) {
