@@ -20,5 +20,5 @@ export class Controller {
       };
       res.status(500).json(error);
     }
-  };
+  }
 }
