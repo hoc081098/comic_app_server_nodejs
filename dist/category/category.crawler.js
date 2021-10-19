@@ -60,8 +60,7 @@ class Crawler {
             // this is not the first time, not need await, data will be saved to firebase database for later
             // and current data is valid, just return
             // tslint:disable-next-line: no-floating-promises
-            // noinspection JSIgnoredPromiseFromCall
-            this.getAndSaveImages(links);
+            this.getAndSaveImages(links).then(v => util_1.log({ v })).catch(e => util_1.log({ e }));
             return images;
         }
         else {
