@@ -121,7 +121,7 @@ function bodyToComicList(body: string): Comic[] {
     });
 }
 
-function bodyToComicListNew(body: string): any[] {
+function bodyToComicListNew(body: string): Comic[] {
   const $: CheerioStatic = cheerio.load(body);
 
   return $('div.panel-content-genres > div.content-genres-item')

@@ -74,6 +74,7 @@ exports.GET = GET;
  * Parse body to list of comics
  * @param body string
  * @return a list of comics
+ * @deprecated
  */
 function bodyToComicList(body) {
     const $ = cheerio_1.default.load(body);

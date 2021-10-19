@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import { ComicDetail } from "./comic_detail.interface";
-import { bodyToComicList, GET } from "../util";
+import { GET } from "../util";
 
 export class Crawler {
 

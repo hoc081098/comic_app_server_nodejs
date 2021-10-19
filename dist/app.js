@@ -30,12 +30,18 @@ app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 /**
  * Use routes
  */
-app.use('/', index_1.default);
-app.use('/comic_detail', detail_1.default);
-app.use('/chapter_detail', chapter_detail_1.default);
-app.use('/search_comic', search_comic_1.default);
-app.use('/category', category_1.default);
-app.use('/category_detail', category_detail_1.default);
+const routers = [
+    ['/', index_1.default],
+    ['/comic_detail', detail_1.default],
+    ['/chapter_detail', chapter_detail_1.default],
+    ['/search_comic', search_comic_1.default],
+    ['/category', category_1.default],
+    ['/category_detail', category_detail_1.default],
+];
+routers.forEach(([p, r]) => {
+    app.use(p, r);
+    util_1.log(`Use route ${p}`);
+});
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
