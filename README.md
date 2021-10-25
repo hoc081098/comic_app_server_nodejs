@@ -1,6 +1,6 @@
 # comic_app_server_nodejs
 * Node.js server for android, flutter comic app | [https://comic-app-081098.herokuapp.com/](https://comic-app-081098.herokuapp.com/)
-* Crawler [https://ww2.mangafox.online/](https://ww2.mangafox.online/)
+* Crawler https://manganato.com/
 ## Routes
 * /updated_comics?page=...
 * /most_viewed_comics?page=...
