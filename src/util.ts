@@ -124,32 +124,42 @@ function bodyToComicList(body: string): Comic[] {
 function bodyToComicListNew(body: string): Comic[] {
   const $: CheerioStatic = cheerio.load(body);
 
-  return $('div.panel-content-genres > div.content-genres-item')
+  return $('div.container > div.main-wrapper > div.leftCol.listCol > div.truyen-list > div.list-truyen-item-wrap')
     .toArray()
-    .map((divComic: CheerioElement): Comic => {
+    .map((divComic: CheerioElement): Comic | null => {
       const $divComic: Cheerio = $(divComic);
-      const $genres_item_info = $divComic.find('div.genres-item-info');
-      const a = $genres_item_info.find('h3 > a');
-      const $genres_item_chap = $genres_item_info.find('a.genres-item-chap');
 
+      const $genres_item_chap = $divComic.find('a.list-story-item-wrap-chapter');
       const chapter_link = $genres_item_chap.attr('href');
       const chapter_name = $genres_item_chap.text();
-      return {
-        last_chapters: chapter_link && chapter_name
-          ? [
-            {
-              chapter_name,
-              chapter_link,
-              time: $genres_item_info.find('span.genres-item-time').text(),
-            },
-          ]
-          : [],
-        link: a.attr('href'),
-        thumbnail: $divComic.find('img').attr('src'),
-        title: a.text(),
-        view: $genres_item_info.find('span.genres-item-view').text(),
-      };
-    });
+
+      const thumbnail = $divComic.find('a > img.img-loading').attr('data-src');
+
+      const a = $divComic.find('h3 > a');
+      const link = a.attr('href');
+      const title = a.text();
+
+      return link && thumbnail && title
+        ? ({
+          last_chapters: chapter_link && chapter_name
+            ? [
+              {
+                chapter_name,
+                chapter_link: BASE_URL + chapter_link,
+                time: '',
+              },
+            ]
+            : [],
+          link: BASE_URL + link,
+          thumbnail: BASE_URL + thumbnail,
+          title,
+          view: $divComic.find('span.aye_icon').text(),
+        })
+        : null;
+    })
+    .filter((c: Comic | null): c is Comic => c !== null);
 }
+
+export const BASE_URL = 'https://ww.mangakakalot.tv';
 
 export { isValidURL, log, escapeHTML, encode, decode, GET, bodyToComicList, bodyToComicListNew };

@@ -4,7 +4,7 @@ exports.Crawler = void 0;
 const util_1 = require("../util");
 class Crawler {
     static async newestComics(page) {
-        const body = await util_1.GET(`https://manganato.com/genre-all/${page}?type=newest`);
+        const body = await util_1.GET(`https://ww.mangakakalot.tv/manga_list/?type=newest&category=all&state=all&page=${page}`);
         return util_1.bodyToComicListNew(body);
     }
     static async updatedComics(page) {
